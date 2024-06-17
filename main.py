@@ -235,7 +235,7 @@ async def recibir():
                     )
                     embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"])
                     embed.add_field(name="Dificultad: ", value=str(datos["commandData"]["leaderboard"]["difficulty"]["difficulty"]), inline=False)
-                    embed.set_footer(text="El anterior juego de un Colombiano fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
+                    embed.set_footer(text="El anterior juego de alguien de tu nacion fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
                     
                     for guild in client.guilds:
                         for canal in guild.text_channels:
