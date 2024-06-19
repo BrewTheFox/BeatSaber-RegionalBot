@@ -111,6 +111,7 @@ async def retar(interaction: discord.Interaction, dificultad: Literal["Facil", "
         if len(jugadores[id]["reto"].keys()) >= 1:
             embed = discord.Embed(title=f"¡Ya solicitaste un reto /cancelar si no lo quieres!", color=discord.Color.red())
             await interaction.response.send_message(embed=embed)
+            return
         tipo = random.choice(retos)
         if dificultad == "Facil":
             if tipo == "puntaje":
@@ -194,62 +195,66 @@ async def vincular(interaction: discord.Interaction, link:str):
 async def recibir():
     print(client.guilds)
     jugadas = 0
-    async with websockets.connect("wss://scoresaber.com/ws") as socket:
-        while True:
-            try:
-                datos = await socket.recv()
-                if datos and "{" in datos:
-                    datos = json.loads(datos)
-                    if datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] == os.getenv("pais"):
-                        esvalido = False
-                        if datos["commandData"]["score"]['leaderboardPlayerInfo']["id"] in jugadores:
-                            if len(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"]) >= 1:
-                                esvalido = validarreto(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"], datos)
-                                if esvalido[0] == True:
-                                    retoembed = discord.Embed(title=f"¡Muy bien {datos['commandData']['score']['leaderboardPlayerInfo']['name']}, Lograste superar el reto")
-                                    retoembed.add_field(name="Categoria", value=list(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"].keys())[0].upper(), inline=False)
-                                    retoembed.add_field(name="Valor a superar:", value=jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"][list(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"].keys())[0]], inline=False)
-                                    retoembed.add_field(name="Valor obtenido: ", value=esvalido[1], inline=False)
-                                    retoembed.set_thumbnail(url=datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"])
-                                    del jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"][list(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"].keys())[0]]
-                                    guardarjugadores()
-                        embed = discord.Embed(
+    while True:
+        try:
+            async with websockets.connect("wss://scoresaber.com/ws") as socket:
+                while True:
+                    datos = await socket.recv()
+                    if datos and "{" in datos:
+                        datos = json.loads(datos)
+                        if datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] == os.getenv("pais"):
+                            esvalido = [False, 0]
+                            if datos["commandData"]["score"]['leaderboardPlayerInfo']["id"] in jugadores:
+                                if len(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"]) >= 1:
+                                    esvalido = validarreto(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"], datos)
+                                    if esvalido[0] == True:
+                                        retoembed = discord.Embed(title=f"¡Muy bien {datos['commandData']['score']['leaderboardPlayerInfo']['name']}, Lograste superar el reto")
+                                        retoembed.add_field(name="Categoria", value=list(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"].keys())[0].upper(), inline=False)
+                                        retoembed.add_field(name="Valor a superar:", value=jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"][list(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"].keys())[0]], inline=False)
+                                        retoembed.add_field(name="Valor obtenido: ", value=esvalido[1], inline=False)
+                                        retoembed.set_thumbnail(url=datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"])
+                                        del jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"][list(jugadores[datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]]["reto"].keys())[0]]
+                                        guardarjugadores()
+                            embed = discord.Embed(
                         title=f"¡**{datos['commandData']['score']['leaderboardPlayerInfo']['name']}** Logro!",
                         color=discord.Color.green()
                         )
-                        embed.add_field(
+                            embed.add_field(
                         name="Pasarse satisfactoriamente **" + datos["commandData"]["leaderboard"]["songName"] + "**",
                         value=" ",
                         inline=False
                     )
-                        embed.set_thumbnail(url=datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"])
-                        embed.set_image(url=datos["commandData"]["leaderboard"]["coverImage"])
-                        embed.add_field(
-                        name="Puntaje: ",
-                        value='{:20,.0f}'.format(datos["commandData"]["score"]["modifiedScore"]),
-                        inline=False
+                            embed.set_thumbnail(url=datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"])
+                            embed.set_image(url=datos["commandData"]["leaderboard"]["coverImage"])
+                            embed.add_field(
+                            name="Puntaje: ",
+                            value='{:20,.0f}'.format(datos["commandData"]["score"]["modifiedScore"]),
+                            inline=False
                     )
-                        embed.add_field(
-                        name="PP añadido: ",
-                        value=str(int(datos["commandData"]["score"]["pp"] * datos["commandData"]["score"]["weight"])),
-                        inline=True
+                            embed.add_field(
+                            name="PP añadido: ",
+                            value=str(int(datos["commandData"]["score"]["pp"] * datos["commandData"]["score"]["weight"])),
+                            inline=True
                     )
-                        embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"])
-                        embed.add_field(name="Dificultad: ", value=str(datos["commandData"]["leaderboard"]["difficulty"]["difficulty"]), inline=False)
-                        embed.set_footer(text="El anterior juego de un Colombiano fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
+                            embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"])
+                            embed.add_field(name="Dificultad: ", value=str(datos["commandData"]["leaderboard"]["difficulty"]["difficulty"]), inline=False)
+                            embed.set_footer(text="El anterior juego de un Colombiano fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
                     
-                        for guild in client.guilds:
-                            for canal in guild.text_channels:
-                                if canal.name == "scoresaber":
-                                    await canal.send(embed=embed)
-                                if canal.name == "retos" and esvalido[0] == True:
-                                    await canal.send(embed=retoembed)
-                        jugadas = 0
-                    else:
-                        jugadas += 1
-                        print("Pais erroneo (" + datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] + ") Jugadas: " + str(jugadas))
-            except:
-                print("Ocurrio un error, reestableciendo")
+                            for guild in client.guilds:
+                                for canal in guild.text_channels:
+                                    if canal.name == "scoresaber":
+                                        await canal.send(embed=embed)
+                                    if canal.name == "retos" and esvalido[0] == True:
+                                        await canal.send(embed=retoembed)
+                            jugadas = 0
+                        else:
+                            jugadas += 1
+                            print("Pais erroneo (" + datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] + ") Jugadas: " + str(jugadas))
+                            actividad = discord.Game(f"Hace {str(jugadas)} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!", type=1)
+                            await client.change_presence(status=discord.Status.idle, activity=actividad)
+        except Exception as e: 
+            print("Ocurrio un error, reestableciendo")
+            print(e)
 
 @client.event
 async def on_ready():
