@@ -246,7 +246,7 @@ async def recibir():
                             inline=True
                     )
                             embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"])
-                            embed.add_field(name="Exactitud (Calculada):", value=str((puntaje / puntajemaximo) * 100), inline=False)
+                            embed.add_field(name="Exactitud (Calculada):", value=str(round((puntaje / puntajemaximo) * 100, 2)) + "%", inline=False)
                             embed.add_field(name="Dificultad: ", value=str(dificultad), inline=False)
                             embed.set_footer(text="El anterior juego de alguien de tu pais fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
                     
