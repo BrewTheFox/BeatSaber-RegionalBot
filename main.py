@@ -73,7 +73,7 @@ async def desvincular(interaction: discord.Interaction):
         url = f"https://scoresaber.com/api/player/{user}/full"
         response = requests.request("GET", url)
         datos = json.loads(response.text)
-        embed = discord.Embed(title=f"La cuenta {datos["name"]} se ha desvinculado de tu discord.", color=discord.Color.green())
+        embed = discord.Embed(title=f"La cuenta {datos['name']} se ha desvinculado de tu discord.", color=discord.Color.green())
         embed.set_thumbnail(url=datos["profilePicture"])
     else:
         embed = discord.Embed(title=f"No tienes una cuenta que desvincular.", color=discord.Color.red())
@@ -181,7 +181,7 @@ async def vincular(interaction: discord.Interaction, link:str):
         else:
             datos = json.loads(response.text)
             if not id in jugadores.keys():
-                embed = discord.Embed(title=f"Hola, {datos["name"]} ¡Bienvenido!", color=discord.Color.green())
+                embed = discord.Embed(title=f"Hola, {datos['name']} ¡Bienvenido!", color=discord.Color.green())
                 embed.add_field(name="Fuiste registrado correctamente.", value=" ")
                 embed.set_thumbnail(url=datos["profilePicture"])
                 jugadores[str(id)] = {"discord":str(interaction.user.id), "reto": {}}
