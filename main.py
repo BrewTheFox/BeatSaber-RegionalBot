@@ -203,6 +203,7 @@ async def recibir():
                     if datos and "{" in datos:
                         datos = json.loads(datos)
                         if datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] == os.getenv("pais"):
+                            print("Se encontro un jugador.")
                             nombre = datos['commandData']['score']['leaderboardPlayerInfo']['name']
                             gameid = datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]
                             pfp = datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"]
