@@ -110,7 +110,7 @@ async def retar(interaction: discord.Interaction, dificultad: Literal["Facil", "
     if encontrado == True:
         if len(jugadores[id]["reto"].keys()) >= 1:
             embed = discord.Embed(title=f"¡Ya solicitaste un reto /cancelar si no lo quieres!", color=discord.Color.red())
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         tipo = random.choice(retos)
         if dificultad == "Facil":
