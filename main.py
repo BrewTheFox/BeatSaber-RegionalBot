@@ -215,7 +215,7 @@ async def recibir():
                             puntajemaximo = datos["commandData"]["leaderboard"]["maxScore"]
                             esvalido = [False, 0]
                             if gameid in jugadores:
-                                if len(jugadores[datos[gameid]]["reto"]) >= 1:
+                                if len(jugadores[gameid]["reto"]) >= 1:
                                     esvalido = validarreto(gameid, datos)
                                     if esvalido[0] == True:
                                         retoembed = discord.Embed(title=f"¡Muy bien {nombre}, Lograste superar el reto")
