@@ -218,7 +218,7 @@ async def recibir():
                                 if len(jugadores[gameid]["reto"]) >= 1:
                                     esvalido = validarreto(gameid, datos)
                                     if esvalido[0] == True:
-                                        retoembed = discord.Embed(title=f"¡Muy bien {nombre}, Lograste superar el reto")
+                                        retoembed = discord.Embed(title=f"¡Muy bien {nombre} !, Lograste superar el reto")
                                         retoembed.add_field(name="Categoria", value=list(jugadores[gameid]["reto"].keys())[0].upper(), inline=False)
                                         retoembed.add_field(name="Valor a superar:", value=jugadores[gameid]["reto"][list(jugadores[gameid]["reto"].keys())[0]], inline=False)
                                         retoembed.add_field(name="Valor obtenido: ", value=esvalido[1], inline=False)
