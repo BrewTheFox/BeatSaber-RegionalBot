@@ -260,7 +260,6 @@ async def recibir():
                             jugadas = 0
                         else:
                             jugadas += 1
-                            print("Pais erroneo (" + datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] + ") Jugadas: " + str(jugadas))
                             actividad = discord.Game(f"Hace {str(jugadas)} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!", type=1)
                             await client.change_presence(status=discord.Status.idle, activity=actividad)
         except Exception as e: 
