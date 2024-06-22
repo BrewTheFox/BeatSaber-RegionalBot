@@ -265,6 +265,19 @@ async def recibir():
         except Exception as e: 
             print("Ocurrio un error, reestableciendo")
             print(e)
+            print("Datos importantes:")
+            print(f"Nombre del jugador: {nombre}")
+            print(f"ID del juego: {gameid}")
+            print(f"Imagen de perfil: {pfp}")
+            print(f"Nombre de la canción: {nombrecancion}")
+            print(f"Imagen del álbum: {imagenalbum}")
+            print(f"Puntaje obtenido: {puntaje}")
+            print(f"Puntos de rendimiento (pp): {pp}")
+            print(f"Dificultad: {dificultad}")
+            print(f"Puntaje máximo posible: {puntajemaximo}")
+            print(f"Es válido: {esvalido[0]}, Código de validez: {esvalido[1]}")
+
+            
 
 @client.event
 async def on_ready():
