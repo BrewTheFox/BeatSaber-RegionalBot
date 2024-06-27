@@ -260,7 +260,7 @@ async def recibir():
                             embed.add_field(name="Control derecho:", value=datos["commandData"]["score"]["deviceControllerRight"])
                             embed.add_field(name="Control Izquierdo:", value=datos["commandData"]["score"]["deviceControllerLeft"])
                             if not "error" in cancion.keys():
-                                embed.add_field(name="Descarga de la cancion:", value=(f"Utiliza [Este link](https://beatsaver.com/maps/{cancion["codigo"]})"), inline=False)
+                                embed.add_field(name="Descarga de la cancion:", value=(f"Utiliza [Este link](https://beatsaver.com/maps/{cancion['codigo']})"), inline=False)
                             embed.set_footer(text="El anterior juego de alguien de tu pais fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
                     
                             for guild in client.guilds:
