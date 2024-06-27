@@ -8,6 +8,7 @@ import random
 import csv
 from dotenv import load_dotenv
 import os
+import beatsaver
 
 load_dotenv("./config.env")
 intents = discord.Intents.all()
@@ -211,14 +212,18 @@ async def recibir():
                             imagenalbum = datos["commandData"]["leaderboard"]["coverImage"]
                             puntaje = datos["commandData"]["score"]["modifiedScore"]
                             pp = datos["commandData"]["score"]["pp"]
-                            dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficulty"]
+                            estrellas = datos["commandData"]["leaderboard"]["stars"]
                             puntajemaximo = datos["commandData"]["leaderboard"]["maxScore"]
+                            hashcancion = datos["commandData"]["leaderboard"]["songHash"]
+                            dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
+                            fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
                             esvalido = [False, 0]
+                            cancion = beatsaver.songinfo(hashcancion, dificultad)
                             if gameid in jugadores:
                                 if len(jugadores[gameid]["reto"]) >= 1:
                                     esvalido = validarreto(gameid, datos)
                                     if esvalido[0] == True:
-                                        retoembed = discord.Embed(title=f"¡Muy bien {nombre} !, Lograste superar el reto")
+                                        retoembed = discord.Embed(title=f"¡Muy bien {nombre}, Lograste superar el reto")
                                         retoembed.add_field(name="Categoria", value=list(jugadores[gameid]["reto"].keys())[0].upper(), inline=False)
                                         retoembed.add_field(name="Valor a superar:", value=jugadores[gameid]["reto"][list(jugadores[gameid]["reto"].keys())[0]], inline=False)
                                         retoembed.add_field(name="Valor obtenido: ", value=esvalido[1], inline=False)
@@ -246,10 +251,16 @@ async def recibir():
                             value=str(int(pp * datos["commandData"]["score"]["weight"])),
                             inline=True
                     )
-                            embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"])
                             if puntajemaximo != 0:
-                                embed.add_field(name="Exactitud (Calculada):", value=str(round((puntaje / puntajemaximo) * 100, 2)) + "%", inline=False)
-                            embed.add_field(name="Dificultad: ", value=str(dificultad), inline=False)
+                                embed.add_field(name="Exactitud (Calculada):", value=str(round((puntaje / puntajemaximo) * 100, 2)) + "%")
+                            embed.add_field(name="Estrellas: ", value=str(estrellas))
+                            if not "error" in cancion.keys():
+                                embed.add_field(name="Notas logradas:", value=str(cancion["notas"] - fallos) + "/" + str(cancion["notas"]), inline=False)
+                            embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"], inline=False)
+                            embed.add_field(name="Control derecho:", value=datos["commandData"]["score"]["deviceControllerRight"])
+                            embed.add_field(name="Control Izquierdo:", value=datos["commandData"]["score"]["deviceControllerLeft"])
+                            if not "error" in cancion.keys():
+                                embed.add_field(name="Descarga de la cancion:", value=(f"Utiliza [Este link](https://beatsaver.com/maps/{cancion["codigo"]})"), inline=False)
                             embed.set_footer(text="El anterior juego de alguien de tu pais fue hace " + str(jugadas) + " partidas. Saludos @brewthefox")
                     
                             for guild in client.guilds:
@@ -274,7 +285,7 @@ async def recibir():
             print(f"Imagen del álbum: {imagenalbum}")
             print(f"Puntaje obtenido: {puntaje}")
             print(f"Puntos de rendimiento (pp): {pp}")
-            print(f"Dificultad: {dificultad}")
+            print(f"Dificultad: {estrellas}")
             print(f"Puntaje máximo posible: {puntajemaximo}")
             print(f"Es válido: {esvalido[0]}, Código de validez: {esvalido[1]}")
 
