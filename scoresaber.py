@@ -1,10 +1,31 @@
 import requests
 import discord
-import re
 import json
+import re
 import saveapi
+
 expresion = re.compile("https://scoresaber\.com/u/([0-9]*)")
 
+def getplayerinfo(did:int, jugadores:dict) -> list:
+    for jugador in jugadores.keys():
+        if str(jugadores[jugador]["discord"]) == str(did):
+            datos = json.loads(requests.get(f"https://scoresaber.com/api/player/{jugador}/full").text)
+            embed = discord.Embed(title=f"¡Perfil de {datos['name']}!", color=discord.Color.green())
+            embed.set_thumbnail(url=datos['profilePicture'])
+            embed.add_field(name="🌎", value=f"#{datos['rank']}", inline=True)
+            code_points = [127397 + ord(char) for char in datos['country'].upper()]
+            embed.add_field(name=''.join(chr(code) for code in code_points), value=f'#{datos["countryRank"]}', inline=True)
+            embed.add_field(name="PP:", value=str(datos["pp"]), inline=False)
+            embed.add_field(name="Puntaje total:", value=str('{:20,.0f}'.format(datos["scoreStats"]["totalScore"])), inline=False)
+            embed.add_field(name="Juegos totales:", value=str(datos["scoreStats"]["totalPlayCount"]), inline=False)
+            embed.add_field(name="Fecha de registro:", value=str(datos["firstSeen"]), inline=False)
+            embed.set_footer(text="Bot por @brewthefox :D")
+            return embed, False
+    embed = discord.Embed(title="¡No hay una cuenta de scoresaber vinculada a este usuario!", color=discord.Color.red())
+    embed.add_field(name="**Si la consulta es para ti usa /vincular, si es para otro usuario pidele que vincule su cuenta.**", value=" ")
+    return embed, True
+
+### Funciones de vinculacion con scoresaber ###
 def vincular(link:str, jugadores:dict, uid:int) -> list:
     link = link.replace("www.", "")
     if not link:

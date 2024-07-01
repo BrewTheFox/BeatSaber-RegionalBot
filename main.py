@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import beatsaver
 import saveapi
-import vinculation
+import scoresaber
 import retos
 
 load_dotenv("./config.env")
@@ -14,15 +14,26 @@ intents = discord.Intents.all()
 intents.message_content = True
 client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
-headers = ['id', 'discord', 'reto', 'puntos']
 print("Cargando usuarios...")
 
 jugadores = saveapi.loadplayers()
 
+@tree.command(name="bsperfil", description="Obtiene datos de tu perfil de scoresaber")
+async def obtenerdatos(interaction: discord.Interaction):
+    global jugadores
+    embed, efimero = scoresaber.getplayerinfo(interaction.user.id, jugadores)
+    await interaction.response.send_message(embed=embed, ephemeral=efimero)
+
+@tree.command(name="verperfil", description="Obtiene datos del perfil de scoresaber de alguien del servidor")
+async def obtenerjugador(interaction: discord.Interaction, miembro:discord.Member):
+    global jugadores
+    embed, efimero = scoresaber.getplayerinfo(miembro.id, jugadores)
+    await interaction.response.send_message(embed=embed, ephemeral=efimero)
+
 @tree.command(name="desvincular", description="Desvincula y elimina los datos de la cuenta.")
 async def desvincular(interaction: discord.Interaction):
     global jugadores
-    embed, jugadores = vinculation.desvincular(interaction.user.id, jugadores)
+    embed, jugadores = scoresaber.desvincular(interaction.user.id, jugadores)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @tree.command(name="cancelar", description="Cancela el reto actual.")
@@ -40,7 +51,7 @@ async def retar(interaction: discord.Interaction, dificultad: Literal["Facil", "
 @tree.command(name="vincular", description="Vincula una cuenta de scoresaber con tu cuenta de discord.")
 async def vincular(interaction: discord.Interaction, link:str):
     global jugadores
-    embed, jugadores = vinculation.vincular(link, jugadores, interaction.user.id)
+    embed, jugadores = scoresaber.vincular(link, jugadores, interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 async def recibir():
@@ -125,19 +136,22 @@ async def recibir():
                             actividad = discord.Game(f"Hace {str(jugadas)} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!", type=1)
                             await client.change_presence(status=discord.Status.idle, activity=actividad)
         except Exception as e: 
-            print("Ocurrio un error, reestableciendo")
-            print(e)
-            print("Datos importantes:")
-            print(f"Nombre del jugador: {nombre}")
-            print(f"ID del juego: {gameid}")
-            print(f"Imagen de perfil: {pfp}")
-            print(f"Nombre de la canción: {nombrecancion}")
-            print(f"Imagen del álbum: {imagenalbum}")
-            print(f"Puntaje obtenido: {puntaje}")
-            print(f"Puntos de rendimiento (pp): {pp}")
-            print(f"Dificultad: {estrellas}")
-            print(f"Puntaje máximo posible: {puntajemaximo}")
-            print(f"Es válido: {esvalido[0]}, Código de validez: {esvalido[1]}")
+            try:
+                print("Ocurrio un error, reestableciendo")
+                print(e)
+                print("Datos importantes:")
+                print(f"Nombre del jugador: {nombre}")
+                print(f"ID del juego: {gameid}")
+                print(f"Imagen de perfil: {pfp}")
+                print(f"Nombre de la canción: {nombrecancion}")
+                print(f"Imagen del álbum: {imagenalbum}")
+                print(f"Puntaje obtenido: {puntaje}")
+                print(f"Puntos de rendimiento (pp): {pp}")
+                print(f"Dificultad: {estrellas}")
+                print(f"Puntaje máximo posible: {puntajemaximo}")
+                print(f"Es válido: {esvalido[0]}, Código de validez: {esvalido[1]}")
+            except:
+                print("No existen datos para mostrar")
 
 @client.event
 async def on_ready():
