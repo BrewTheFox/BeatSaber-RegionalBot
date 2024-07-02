@@ -43,6 +43,10 @@ def vincular(link:str, jugadores:dict, uid:int) -> list:
             return embed, jugadores
         else:
             datos = json.loads(response.text)
+            for jugador in jugadores.keys():
+                if jugadores[jugador]["discord"] == str(uid):
+                    embed = discord.Embed(title="Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero.", color=discord.Color.red())
+                    return embed, jugadores
             if not id in jugadores.keys():
                 embed = discord.Embed(title=f"Hola, {datos['name']} ¡Bienvenido!", color=discord.Color.green())
                 embed.add_field(name="Fuiste registrado correctamente.", value=" ")

@@ -64,7 +64,7 @@ async def recibir():
                     datos = await socket.recv()
                     if datos and "{" in datos:
                         datos = json.loads(datos)
-                        if datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] == os.getenv("pais"):
+                        if datos["commandData"]["score"]['leaderboardPlayerInfo']['country'] == os.getenv("pais") or str(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]) in jugadores.keys():
                             print("Se encontro un jugador.")
                             nombre = datos['commandData']['score']['leaderboardPlayerInfo']['name']
                             gameid = datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]
