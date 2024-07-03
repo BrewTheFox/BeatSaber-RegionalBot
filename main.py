@@ -71,7 +71,8 @@ async def recibir():
                             pfp = datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"]
                             nombrecancion = datos["commandData"]["leaderboard"]["songName"]
                             imagenalbum = datos["commandData"]["leaderboard"]["coverImage"]
-                            puntaje = datos["commandData"]["score"]["modifiedScore"]
+                            puntajemod = datos["commandData"]["score"]["modifiedScore"]
+                            puntajebase = datos["commandData"]["score"]["baseScore"]
                             pp = datos["commandData"]["score"]["pp"]
                             estrellas = datos["commandData"]["leaderboard"]["stars"]
                             puntajemaximo = datos["commandData"]["leaderboard"]["maxScore"]
@@ -104,7 +105,7 @@ async def recibir():
                             embed.set_image(url=imagenalbum)
                             embed.add_field(
                             name="Puntaje: ",
-                            value='{:20,.0f}'.format(puntaje),
+                            value='{:20,.0f}'.format(puntajemod),
                             inline=False
                     )
                             embed.add_field(
@@ -113,7 +114,7 @@ async def recibir():
                             inline=True
                     )
                             if puntajemaximo != 0:
-                                embed.add_field(name="Exactitud (Calculada):", value=str(round((puntaje / puntajemaximo) * 100, 2)) + "%")
+                                embed.add_field(name="Exactitud (Calculada):", value=str(round((puntajebase / puntajemaximo) * 100, 2)) + "%")
                             embed.add_field(name="Estrellas: ", value=str(estrellas))
                             if not "error" in cancion.keys():
                                 embed.add_field(name="Notas logradas:", value=str(cancion["notas"] - fallos) + "/" + str(cancion["notas"]), inline=False)
