@@ -118,6 +118,7 @@ async def recibir():
                             embed.add_field(name="Estrellas: ", value=str(estrellas))
                             if not "error" in cancion.keys():
                                 embed.add_field(name="Notas logradas:", value=str(cancion["notas"] - fallos) + "/" + str(cancion["notas"]), inline=False)
+                                embed.add_field(name="Dificultad:", value=cancion["dificultad"])
                             embed.add_field(name="Dispositivo: ", value=datos["commandData"]["score"]["deviceHmd"], inline=False)
                             embed.add_field(name="Control derecho:", value=datos["commandData"]["score"]["deviceControllerRight"])
                             embed.add_field(name="Control Izquierdo:", value=datos["commandData"]["score"]["deviceControllerLeft"])
@@ -146,7 +147,7 @@ async def recibir():
                 print(f"Imagen de perfil: {pfp}")
                 print(f"Nombre de la canción: {nombrecancion}")
                 print(f"Imagen del álbum: {imagenalbum}")
-                print(f"Puntaje obtenido: {puntaje}")
+                print(f"Puntaje obtenido: {puntajebase}")
                 print(f"Puntos de rendimiento (pp): {pp}")
                 print(f"Dificultad: {estrellas}")
                 print(f"Puntaje máximo posible: {puntajemaximo}")
