@@ -116,7 +116,7 @@ async def recibir(client):
                             cancion = beatsaver.songinfo(hashcancion, dificultad)
                             if gameid in jugadores:
                                 if len(jugadores[gameid]["reto"]) >= 1:
-                                    esvalido = retos.validarreto(gameid, datos, jugadores)
+                                    esvalido = retos.validarreto(gameid, datos)
                                     if esvalido[0] == True:
                                         retoembed = discord.Embed(title=f"¡Muy bien {nombre}, Lograste superar el reto")
                                         retoembed.add_field(name="Categoria", value=list(jugadores[gameid]["reto"].keys())[0].upper(), inline=False)
