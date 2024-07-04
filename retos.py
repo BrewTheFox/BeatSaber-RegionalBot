@@ -1,8 +1,10 @@
 import discord
 import random
-import saveapi
+import playerhandler
 
-def validarreto(id:str, datos:dict, jugadores:dict) -> list:
+
+def validarreto(id:str, datos:dict) -> list:
+    jugadores = playerhandler.fetchjugadores()
     if list(jugadores[id]["reto"].keys())[0] == "pp":
         return [datos["commandData"]["score"]["pp"] >= jugadores[id]["reto"]["pp"], datos["commandData"]["score"]["pp"]]
     if list(jugadores[id]["reto"].keys())[0] == "estrellas":
@@ -10,7 +12,8 @@ def validarreto(id:str, datos:dict, jugadores:dict) -> list:
     if list(jugadores[id]["reto"].keys())[0] == "puntaje":
         return [datos["commandData"]["score"]["modifiedScore"] >= jugadores[id]["reto"]["puntaje"], datos["commandData"]["score"]["modifiedScore"]]
 
-def generarreto(uid:int, dificultad:str, jugadores:dict) -> list:
+def generarreto(uid:int, dificultad:str):
+    jugadores = playerhandler.fetchjugadores()
     encontrado = False
     retos = ["puntaje", "estrellas", "pp"]
     for jugador in jugadores.keys():
@@ -22,7 +25,7 @@ def generarreto(uid:int, dificultad:str, jugadores:dict) -> list:
     if encontrado == True:
         if len(jugadores[id]["reto"].keys()) >= 1:
             embed = discord.Embed(title=f"¡Ya solicitaste un reto /cancelar si no lo quieres!", color=discord.Color.red())
-            return embed, jugadores
+            return embed
         tipo = random.choice(retos)
         if dificultad == "Facil":
             if tipo == "puntaje":
@@ -37,8 +40,8 @@ def generarreto(uid:int, dificultad:str, jugadores:dict) -> list:
                 cantidad = random.randint(10,100)
                 jugadores[id]["reto"][tipo] = cantidad
                 embed = discord.Embed(title=f"¡Pasate un nivel con mas de {cantidad} PP!", color=discord.Color.blue())
-            saveapi.guardarjugadores(jugadores)
-            return embed, jugadores
+            playerhandler.setjugadores(jugadores)
+            return embed
         if dificultad == "Dificil":
             if tipo == "puntaje":
                 puntaje = random.randint(600, 1200) * 1000
@@ -52,8 +55,8 @@ def generarreto(uid:int, dificultad:str, jugadores:dict) -> list:
                 cantidad = random.randint(100,250)
                 jugadores[id]["reto"][tipo] = cantidad
                 embed = discord.Embed(title=f"¡Pasate un nivel con mas de {cantidad} PP!", color=discord.Color.green())
-            saveapi.guardarjugadores(jugadores)
-            return embed, jugadores
+            playerhandler.setjugadores(jugadores)
+            return embed
         if dificultad == "Expert+":
             if tipo == "puntaje":
                 puntaje = random.randint(1200, 2000) * 1000
@@ -67,13 +70,14 @@ def generarreto(uid:int, dificultad:str, jugadores:dict) -> list:
                 cantidad = random.randint(400,550)
                 jugadores[id]["reto"][tipo] = cantidad
                 embed = discord.Embed(title=f"¡Pasate un nivel con mas de {cantidad} PP!", color=discord.Color.orange())
-            saveapi.guardarjugadores(jugadores)
-            return embed, jugadores 
+            playerhandler.setjugadores(jugadores)
+            return embed
     else:
         embed = discord.Embed(title="Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion.", color=discord.Color.red())
-        return embed, jugadores
+        return embed
 
-def cancelarreto(uid:int, jugadores:dict) -> list:
+def cancelarreto(uid:int) -> list:
+    jugadores = playerhandler.fetchjugadores()
     encontrado = False
     for jugador in jugadores.keys():
         if str(uid) == jugadores[jugador]["discord"]:
@@ -81,11 +85,11 @@ def cancelarreto(uid:int, jugadores:dict) -> list:
             if len(list(jugadores[jugador]["reto"].keys())) >=1:
                 del jugadores[jugador]["reto"][list(jugadores[jugador]["reto"].keys())[0]]
                 embed = discord.Embed(title=f"Cancelaste tu reto :(", color=discord.Color.red())
-                saveapi.guardarjugadores(jugadores)
-                return embed, jugadores
+                playerhandler.setjugadores(jugadores)
+                return embed
             else:
                 embed = discord.Embed(title=f"No has solicitado ningun reto :(", color=discord.Color.red())
-                return embed, jugadores               
+                return embed             
     if encontrado == False:    
         embed = discord.Embed(title=f"Si quieres usar este comando tendras que registrarte con /vincular <link>", color=discord.Color.red())
-        return embed, jugadores
+        return embed
