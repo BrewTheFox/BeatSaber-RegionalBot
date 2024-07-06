@@ -4,3 +4,4 @@
 ## Funciones actuales:
  - #### Alertas de jugadores.
  - #### Vinculacion de cuentas.
+ - #### Acceso rapido a los datos de jugadores.
