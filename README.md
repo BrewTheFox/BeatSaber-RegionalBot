@@ -5,3 +5,5 @@
  - #### Alertas de jugadores.
  - #### Vinculacion de cuentas.
  - #### Acceso rapido a los datos de jugadores.
+## Funciones planeadas:
+- #### Acceso al socket de beatleader.
