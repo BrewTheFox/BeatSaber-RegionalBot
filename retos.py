@@ -3,14 +3,14 @@ import random
 import playerhandler
 
 
-def validarreto(id:str, datos:dict) -> list:
+def validarreto(id:str, pp:int, estrellas:float, puntaje:int) -> list:
     jugadores = playerhandler.fetchjugadores()
     if list(jugadores[id]["reto"].keys())[0] == "pp":
-        return [datos["commandData"]["score"]["pp"] >= jugadores[id]["reto"]["pp"], datos["commandData"]["score"]["pp"]]
+        return [pp >= jugadores[id]["reto"]["pp"], pp]
     if list(jugadores[id]["reto"].keys())[0] == "estrellas":
-        return [datos["commandData"]["leaderboard"]["stars"] >= jugadores[id]["reto"]["estrellas"], datos["commandData"]["leaderboard"]["stars"]]
+        return [estrellas >= jugadores[id]["reto"]["estrellas"], estrellas]
     if list(jugadores[id]["reto"].keys())[0] == "puntaje":
-        return [datos["commandData"]["score"]["modifiedScore"] >= jugadores[id]["reto"]["puntaje"], datos["commandData"]["score"]["modifiedScore"]]
+        return [puntaje >= jugadores[id]["reto"]["puntaje"], puntaje]
 
 def generarreto(uid:int, dificultad:str):
     jugadores = playerhandler.fetchjugadores()

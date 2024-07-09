@@ -8,7 +8,7 @@ def songinfo(hash:str, dificulty:str) -> dict:
             dificultad = dificulty.strip("_").split("_")
             for dificultades in datos["versions"][0]["diffs"]:
                 if dificultades["difficulty"].lower() == dificultad[0].lower() and dificultades["characteristic"] in dificultad[1]:
-                    return {"notas":dificultades["notes"], "bombas":dificultades["bombs"], "dificultad":dificultades["difficulty"], "codigo":datos["id"]}
+                    return {"imagen":datos["versions"][0]["coverURL"],"notas":dificultades["notes"], "bombas":dificultades["bombs"], "dificultad":dificultades["difficulty"], "codigo":datos["id"], "nombre": datos["name"]}
             return {'error': 'Not Found'}
     except:
         return {'error': 'Internal'}

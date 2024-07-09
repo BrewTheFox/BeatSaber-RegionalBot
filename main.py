@@ -3,7 +3,9 @@ from typing import Literal
 from dotenv import load_dotenv
 import os
 import scoresaber
+import beatleader
 import retos
+import playerhandler
 
 load_dotenv("./config.env")
 intents = discord.Intents.all()
@@ -23,9 +25,9 @@ async def obtenerjugador(interaction: discord.Interaction, miembro:discord.Membe
     embed, efimero = scoresaber.getplayerinfo(miembro.id)
     await interaction.response.send_message(embed=embed, ephemeral=efimero)
 
-@tree.command(name="desvincular", description="Desvincula y elimina los datos de la cuenta.")
+@tree.command(name="desvincular", description="Desvincula y elimina los datos de la cuenta vinculada.")
 async def desvincular(interaction: discord.Interaction):
-    embed = scoresaber.desvincular(interaction.user.id)
+    embed = playerhandler.desvincular(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @tree.command(name="cancelar", description="Cancela el reto actual.")
@@ -38,14 +40,16 @@ async def retar(interaction: discord.Interaction, dificultad: Literal["Facil", "
     embed = retos.generarreto(interaction.user.id, dificultad)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
-@tree.command(name="vincularss", description="Vincula una cuenta de scoresaber con tu cuenta de discord.")
+@tree.command(name="vincular", description="Vincula una cuenta de beatsaber con tu cuenta de discord.")
 async def vincular(interaction: discord.Interaction, link:str):
-    embed = scoresaber.vincular(link, interaction.user.id)
+    embed = playerhandler.vincular(link, interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 async def start_scoresaber_task(client):
-    import scoresaber  # Import inside the function to avoid circular import at the module level
     await scoresaber.recibir(client)
+
+async def start_beatleader_task(client):
+    await beatleader.recibir(client)
 
 @client.event
 async def on_ready():
@@ -57,5 +61,6 @@ async def on_ready():
         print(e)
 
     client.loop.create_task(start_scoresaber_task(client))
+    client.loop.create_task(start_beatleader_task(client))
 
 client.run(os.getenv("token"))
