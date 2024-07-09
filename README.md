@@ -6,4 +6,4 @@
  - #### Vinculacion de cuentas.
  - #### Acceso rapido a los datos de jugadores.
 ## Funciones planeadas:
-- #### Acceso al socket de beatleader.
+- #### Acceso al socket de beatleader y fusion de datos.
