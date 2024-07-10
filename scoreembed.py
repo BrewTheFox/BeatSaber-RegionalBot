@@ -63,10 +63,11 @@ async def postembed(*, datos:dict, client, gamestill:int):
         fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
         cancion = beatsaver.songinfo(hashcancion, dificultad)
         plataforma = "ScoreSaber"
+    esvalido = [False, 0]
     jugadores = saveapi.loadplayers()
     if gameid in jugadores:
         if len(jugadores[gameid]["reto"]) >= 1:
-            esvalido = retos.validarreto(gameid, datos)
+            esvalido = retos.validarreto(gameid, pp, estrellas, puntajemod)
             if esvalido[0] == True:
                 retoembed = discord.Embed(title=f"¡Muy bien {nombre}, Lograste superar el reto")
                 retoembed.add_field(name="Categoria", value=list(jugadores[gameid]["reto"].keys())[0].upper(), inline=False)
