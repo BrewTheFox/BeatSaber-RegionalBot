@@ -2,6 +2,31 @@ import websockets
 import playerhandler
 import json
 import os
+import requests
+import discord
+
+jugadores = playerhandler.fetchjugadores()
+
+def getplayerinfo(did:int) -> list:
+    jugadores = playerhandler.fetchjugadores()
+    for jugador in jugadores.keys():
+        if str(jugadores[jugador]["discord"]) == str(did):
+            datos = json.loads(requests.get(f"https://api.beatleader.xyz/player/{jugador}?stats=true&keepOriginalId=false").text)
+            embed = discord.Embed(title=f"¡Perfil de {datos['name']}!", color=discord.Color.purple())
+            embed.set_thumbnail(url=datos['avatar'])
+            embed.add_field(name="🌎", value=f"#{datos['rank']}", inline=True)
+            code_points = [127397 + ord(char) for char in datos['country'].upper()]
+            embed.add_field(name=''.join(chr(code) for code in code_points), value=f'#{datos["countryRank"]}', inline=True)
+            embed.add_field(name="PP:", value=str(datos["pp"]), inline=False)
+            embed.add_field(name="Puntaje total:", value=str('{:20,.0f}'.format(datos["scoreStats"]["totalScore"])), inline=False)
+            embed.add_field(name="Juegos totales:", value=str(datos["scoreStats"]["totalPlayCount"]), inline=False)
+            embed.set_footer(text="Bot por @brewthefox :D")
+            return embed, False
+    embed = discord.Embed(title="¡No hay una cuenta de scoresaber vinculada a este usuario!", color=discord.Color.red())
+    embed.add_field(name="**Si la consulta es para ti usa /vincular, si es para otro usuario pidele que vincule su cuenta.**", value=" ")
+    return embed, True
+
+
 async def recibir(client):
     while True:
         try:

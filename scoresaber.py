@@ -13,7 +13,7 @@ def getplayerinfo(did:int) -> list:
     for jugador in jugadores.keys():
         if str(jugadores[jugador]["discord"]) == str(did):
             datos = json.loads(requests.get(f"https://scoresaber.com/api/player/{jugador}/full").text)
-            embed = discord.Embed(title=f"¡Perfil de {datos['name']}!", color=discord.Color.green())
+            embed = discord.Embed(title=f"¡Perfil de {datos['name']}!", color=discord.Color.yellow())
             embed.set_thumbnail(url=datos['profilePicture'])
             embed.add_field(name="🌎", value=f"#{datos['rank']}", inline=True)
             code_points = [127397 + ord(char) for char in datos['country'].upper()]

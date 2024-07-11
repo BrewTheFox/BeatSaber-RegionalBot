@@ -15,6 +15,16 @@ tree = discord.app_commands.CommandTree(client)
 print("Cargando usuarios...")
 
 
+@tree.command(name="blperfil", description="Obtiene datos de tu perfil de Beatleader")
+async def obtenerdatos(interaction: discord.Interaction):
+    embed, efimero = beatleader.getplayerinfo(interaction.user.id)
+    await interaction.response.send_message(embed=embed, ephemeral=efimero)
+
+@tree.command(name="verblperfil", description="Obtiene datos del perfil de Beatleader de alguien del servidor")
+async def obtenerjugador(interaction: discord.Interaction, miembro:discord.Member):
+    embed, efimero = beatleader.getplayerinfo(miembro.id)
+    await interaction.response.send_message(embed=embed, ephemeral=efimero)
+
 @tree.command(name="ssperfil", description="Obtiene datos de tu perfil de scoresaber")
 async def obtenerdatos(interaction: discord.Interaction):
     embed, efimero = scoresaber.getplayerinfo(interaction.user.id)
