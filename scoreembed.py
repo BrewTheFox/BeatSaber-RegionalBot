@@ -17,7 +17,7 @@ async def postembed(*, datos:dict, client, gamestill:int):
         puntajebase = datos["commandData"]["score"]["baseScore"]
         pp = max([datos["commandData"]["score"]["pp"], datos["contextExtensions"][0]["pp"]])
         estrellas = round(max([datos["commandData"]["leaderboard"]["stars"], datos["leaderboard"]["difficulty"]["stars"] or 0]), 2)
-        weight = datos["commandData"]["score"]["weight"]
+        weight = max(datos["commandData"]["score"]["weight"], datos["contextExtensions"][0]["weight"])
         puntajemaximo = datos["commandData"]["leaderboard"]["maxScore"]
         hashcancion = datos["commandData"]["leaderboard"]["songHash"]
         dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
