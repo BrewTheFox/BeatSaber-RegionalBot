@@ -26,7 +26,7 @@ async def checklocalplayerdata(client):
     global lpdata
     clpdata = dict(lpdata)
     for jugador in clpdata.keys():
-        if clpdata[jugador]["timesregistered"] == 1 and clpdata[jugador]["time"] + 4 < time.time():
+        if clpdata[jugador]["timesregistered"] == 1 and clpdata[jugador]["time"] + 6 < time.time():
             print("No se esta jugando doble")
             try:
                 del lpdata[jugador]
@@ -69,7 +69,7 @@ async def playsplusone(playerid:int, leaderboard:str, client) -> None:
     if not playerid in list(pdata.keys()):
         pdata[playerid] = {"time":time.time(), "leaderboard":leaderboard}
     for datos in copypdata:
-        if copypdata[datos]["time"] + 4 < time.time() or copypdata[datos]["leaderboard"] is leaderboard:
+        if copypdata[datos]["time"] + 6 < time.time() or copypdata[datos]["leaderboard"] is leaderboard:
             plays += 1
             actividad = discord.Game(f"Hace {str(plays)} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!", type=1)
             await client.change_presence(status=discord.Status.idle, activity=actividad)
