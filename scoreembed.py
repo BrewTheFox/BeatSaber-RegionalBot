@@ -42,7 +42,7 @@ async def postembed(*, datos:dict, client, gamestill:int):
         puntajebase = datos["contextExtensions"][0]["baseScore"]
         pp = datos["contextExtensions"][0]["pp"]
         weight = datos["contextExtensions"][0]["weight"]
-        estrellas = datos["leaderboard"]["difficulty"]["stars"] or 0
+        estrellas = round(datos["leaderboard"]["difficulty"]["stars"], 2) or 0
         puntajemaximo = datos["leaderboard"]["difficulty"]["maxScore"]
         fallos = int(datos["scoreImprovement"]["badCuts"] + datos["scoreImprovement"]["missedNotes"])
         replay = datos["replay"]
