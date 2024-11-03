@@ -27,7 +27,7 @@ def getplayerinfo(did:int) -> list:
     return embed, True
 
 
-async def recibir(client):
+async def recive(client:discord.Client):
     while True:
         try:
             async with websockets.connect("wss://sockets.api.beatleader.xyz/scores") as socket:

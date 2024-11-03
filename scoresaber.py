@@ -1,7 +1,6 @@
 import requests
 import discord
 import json
-import re
 import websockets
 import playerhandler
 import os
@@ -28,7 +27,7 @@ def getplayerinfo(did:int) -> list:
     embed.add_field(name="**Si la consulta es para ti usa /vincular, si es para otro usuario pidele que vincule su cuenta.**", value=" ")
     return embed, True
 
-async def recibir(client):
+async def recive(client:discord.Client):
     print(client.guilds)
     while True:
         try:

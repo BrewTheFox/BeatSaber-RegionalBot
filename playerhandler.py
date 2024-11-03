@@ -22,7 +22,7 @@ def updatelocalplayerdata(playerid:int, datos:dict):
         lpdata[playerid]["gameplayinfo"].update(datos)
 
 
-async def checklocalplayerdata(client):
+async def checklocalplayerdata(client:discord.Client):
     global lpdata
     clpdata = dict(lpdata)
     for jugador in clpdata.keys():
@@ -47,10 +47,10 @@ async def checklocalplayerdata(client):
 def fetchjugadores() -> dict:
     return jugadores
 
-def setjugadores(newjugadores:dict) -> dict:
+def setplayers(newjugadores:dict) -> dict:
     global jugadores
     jugadores = newjugadores
-    saveapi.guardarjugadores(jugadores)
+    saveapi.saveplayers(jugadores)
     return jugadores
 
 def resetplays() -> None:
@@ -82,7 +82,7 @@ async def playsplusone(playerid:int, leaderboard:str, client) -> None:
             if datos in pdata.keys():
                 del pdata[datos]
 
-def vincular(link:str, uid:int):
+def link(link:str, uid:int):
     jugadores = playerhandler.fetchjugadores()
     link = link.replace("www.", "")
     if not link:
@@ -117,14 +117,14 @@ def vincular(link:str, uid:int):
                 if link.startswith("https://scoresaber.com/u/"):
                     embed.set_thumbnail(url=datos["profilePicture"])
                 jugadores[str(id)] = {"discord":str(uid), "reto": {}}
-                playerhandler.setjugadores(jugadores)
+                playerhandler.setplayers(jugadores)
                 return embed
             else:
                 embed = discord.Embed(title="¿A quien engañas?", color=discord.Color.red())
                 embed.add_field(name="Esta cuenta esta registrada por otro usuario", value=" ")
                 return embed
             
-def desvincular(uid:int):
+def unlink(uid:int):
     jugadores = playerhandler.fetchjugadores()
     encontrado = False
     for usuario in jugadores:
@@ -132,7 +132,7 @@ def desvincular(uid:int):
             user = usuario
             encontrado = True
             del jugadores[usuario]
-            playerhandler.setjugadores(jugadores)
+            playerhandler.setplayers(jugadores)
             break
     if encontrado == True:
         url = f"https://scoresaber.com/api/player/{user}/full"

@@ -3,8 +3,12 @@ import beatsaver
 import saveapi
 import playerhandler
 import retos
-HMDs = {"256": "Quest 2", "512": "Quest 3", "64": "Valve Index", "1": "Rift CV1", "2": "Vive", "60": "Pico 4", "61": "Quest Pro", "8": "Windows Mixed Reality", "16": "Rift S", "65": "Controllable", "32": "Quest", "4": "Vive Pro", "35": "Vive Pro 2", "128": "Vive Cosmos", "36": "Vive Elite", "47": "Vive Focus", "38": "Pimax 8K", "39": "Pimax 5K", "40": "Pimax Artisan", "33": "Pico Neo 3", "34": "Pico Neo 2", "41": "HP Reverb", "42": "Samsung WMR", "43": "Qiyu Dream", "45": "Lenovo Explorer", "46": "Acer WMR", "66": "Bigscreen Beyond", "67": "NOLO Sonic", "68": "Hypereal", "48": "Arpara", "49": "Dell Visor", "55": "Huawei VR", "56": "Asus WMR", "51": "Vive DVT", "52": "glasses20", "53": "Varjo", "69": "Varjo Aero", "54": "Vaporeon", "57": "Cloud XR", "58": "VRidge", "50": "e3", "59": "Medion Eraser", "37": "Miramar", "0": "Unknown headset", "44": "Disco"}
-async def postembed(*, datos:dict, client, gamestill:int):
+# Esta lista de abajo hace que mantener el codigo sea un infierno, toca cambiarla a mano cada vez que alguien saca un nuevo headset
+HMDs = {"256": "Quest 2",    "512": "Quest 3",    "64": "Valve Index",    "513": "Quest 3S",    "1": "Rift CV1",    "2": "Vive",    "60": "Pico 4",    "61": "Quest Pro",    "70": "PS VR2",    "8": "Windows Mixed Reality",    "16": "Rift S",    "65": "Controllable",    "32": "Quest",    "4": "Vive Pro",    "35": "Vive Pro 2",    "128": "Vive Cosmos",    "36": "Vive Elite",    "47": "Vive Focus",    "38": "Pimax 8K",    "39": "Pimax 5K",    "40": "Pimax Artisan",    "33": "Pico Neo 3",    "34": "Pico Neo 2",    "41": "HP Reverb",    "42": "Samsung WMR",    "43": "Qiyu Dream",    "45": "Lenovo Explorer",    "46": "Acer WMR",    "66": "Bigscreen Beyond",    "67": "NOLO Sonic",    "68": "Hypereal",    "48": "Arpara",    "49": "Dell Visor",    "71": "MeganeX VG1",    "55": "Huawei VR",    "56": "Asus WMR",    "51": "Vive DVT",    "52": "glasses20",    "53": "Varjo",    "69": "Varjo Aero",    "54": "Vaporeon",    "57": "Cloud XR",    "58": "VRidge",    "50": "e3",    "59": "Medion Eraser",    "37": "Miramar",    "0": "Unknown headset",    "44": "Disco"}
+async def postembed(*, datos:dict, client: discord.Client, gamestill:int):
+    """Esta funcion solo genera el embed, se encarga principalmente de bindear los datos necesarios a variables
+    Y es casi insostenible, para generar al final solo un embed que requiere de unas 20 lineas de codigo .-."""
+
     print("Scoresaber" in datos.keys() and not "Beatleader" in datos.keys())
     if "Scoresaber" in datos.keys() and "Beatleader" in datos.keys():
         print("Variables multiples asignadas")
@@ -70,7 +74,7 @@ async def postembed(*, datos:dict, client, gamestill:int):
     jugadores = saveapi.loadplayers()
     if gameid in jugadores:
         if len(jugadores[gameid]["reto"]) >= 1:
-            esvalido = retos.validarreto(gameid, pp, estrellas, puntajemod)
+            esvalido = retos.checkchallenge(gameid, pp, estrellas, puntajemod)
             if esvalido[0] == True:
                 retoembed = discord.Embed(title=f"¡Muy bien {nombre}, Lograste superar el reto")
                 retoembed.add_field(name="Categoria", value=list(jugadores[gameid]["reto"].keys())[0].upper(), inline=False)
@@ -78,7 +82,7 @@ async def postembed(*, datos:dict, client, gamestill:int):
                 retoembed.add_field(name="Valor obtenido: ", value=esvalido[1], inline=False)
                 retoembed.set_thumbnail(url=pfp)
                 del jugadores[gameid]["reto"][list(jugadores[gameid]["reto"].keys())[0]]
-                playerhandler.setjugadores(jugadores)
+                playerhandler.setplayers(jugadores)
 
     embed = discord.Embed(title=f"¡**{nombre}** Logro!",color=discord.Color.green())
     embed.add_field(name=f"Pasarse satisfactoriamente **{nombrecancion}**",value=" ",inline=False)

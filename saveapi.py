@@ -21,7 +21,7 @@ def loadplayers() -> dict:
         print(str(cantidadusuarios) + " Usuarios cargados.")
         return jugadores
 
-def guardarjugadores(jugadores:dict):
+def saveplayers(jugadores:dict):
     with open("./save.csv", "w") as archivo:
         escritor = csv.writer(archivo, delimiter=",")
         escritor.writerow(headers)
