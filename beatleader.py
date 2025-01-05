@@ -37,7 +37,6 @@ async def recieve(client:discord.Client):
         try:
             async with websockets.connect("wss://sockets.api.beatleader.xyz/scores") as socket:
                 while True:
-                    await playerhandler.checklocalplayerdata(client)
                     datos = await socket.recv()
                     if datos and "{" in datos:
                         jugadores = playerhandler.fetchjugadores()
