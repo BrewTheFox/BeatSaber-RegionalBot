@@ -2,17 +2,21 @@ import websockets
 import playerhandler
 import json
 import os
-import requests
+import aiohttp
 import discord
 import asyncio
 
 jugadores = playerhandler.fetchjugadores()
 
-def getplayerinfo(did:int) -> list:
+async def getplayerinfo(did:int) -> list:
+    session = aiohttp.ClientSession()
     jugadores = playerhandler.fetchjugadores()
     for jugador in jugadores.keys():
         if str(jugadores[jugador]["discord"]) == str(did):
-            datos = json.loads(requests.get(f"https://api.beatleader.xyz/player/{jugador}?stats=true&keepOriginalId=false").text)
+            async with session as ses:
+                async with ses.get(f"https://api.beatleader.xyz/player/{jugador}?stats=true&keepOriginalId=false") as request:
+                    datos = json.loads(await request.text())
+                    await session.close()
             embed = discord.Embed(title=f"¡Perfil de {datos['name']}!", color=discord.Color.purple())
             embed.set_thumbnail(url=datos['avatar'])
             embed.add_field(name="🌎", value=f"#{datos['rank']}", inline=True)

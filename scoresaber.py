@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 import discord
 import json
 import websockets
@@ -8,11 +8,15 @@ import asyncio
 
 jugadores = playerhandler.fetchjugadores()
 
-def getplayerinfo(did:int) -> list:
+async def getplayerinfo(did:int) -> list:
+    session = aiohttp.ClientSession()
     jugadores = playerhandler.fetchjugadores()
     for jugador in jugadores.keys():
         if str(jugadores[jugador]["discord"]) == str(did):
-            datos = json.loads(requests.get(f"https://scoresaber.com/api/player/{jugador}/full").text)
+            async with session as ses:
+                async with ses.get(f"https://scoresaber.com/api/player/{jugador}/full") as request:
+                    datos = json.loads(await request.text())
+                    await session.close()
             embed = discord.Embed(title=f"¡Perfil de {datos['name']}!", color=discord.Color.yellow())
             embed.set_thumbnail(url=datos['profilePicture'])
             embed.add_field(name="🌎", value=f"#{datos['rank']}", inline=True)

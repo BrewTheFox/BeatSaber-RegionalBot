@@ -3,7 +3,7 @@ import discord
 import time
 import scoreembed
 import playerhandler
-import requests
+import aiohttp
 import json
 import re
 import asyncio
@@ -86,7 +86,8 @@ async def playsplusone(playerid:int, leaderboard:str, client:discord.Client) -> 
             if datos in pdata.keys():
                 del pdata[datos]
 
-def link(link:str, uid:int):
+async def link(link:str, uid:int):
+    session = aiohttp.ClientSession()
     jugadores = playerhandler.fetchjugadores()
     link = link.replace("www.", "")
     if not link:
@@ -103,12 +104,16 @@ def link(link:str, uid:int):
             id = expresionbl.findall(link)[0]
             url = f"https://api.beatleader.xyz/player/{id}?stats=false&keepOriginalId=false"
 
-        response = requests.request("GET", url)
-        if '"errorMessage"' in response.text or response.status_code == 404:
+        async with session as ses:
+            async with ses.get(url) as request:
+                response = await request.text()
+                status = request.status
+                await session.close()
+        if '"errorMessage"' in response or status == 404:
             embed = discord.Embed(title="La cuenta introducida es invalida ;( intentalo denuevo.", color=discord.Color.red())
             return embed
         else:
-            datos = json.loads(response.text)
+            datos = json.loads(response)
             for jugador in jugadores.keys():
                 if jugadores[jugador]["discord"] == str(uid):
                     embed = discord.Embed(title="Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero.", color=discord.Color.red())
@@ -128,7 +133,8 @@ def link(link:str, uid:int):
                 embed.add_field(name="Esta cuenta esta registrada por otro usuario", value=" ")
                 return embed
             
-def unlink(uid:int):
+async def unlink(uid:int):
+    session = aiohttp.ClientSession()
     jugadores = playerhandler.fetchjugadores()
     encontrado = False
     for usuario in jugadores:
@@ -140,8 +146,9 @@ def unlink(uid:int):
             break
     if encontrado == True:
         url = f"https://scoresaber.com/api/player/{user}/full"
-        response = requests.request("GET", url)
-        datos = json.loads(response.text)
+        async with session as ses:
+            async with ses.get(url) as request:
+                datos = json.loads(await request.text())
         embed = discord.Embed(title=f"La cuenta {datos['name']} se ha desvinculado de tu discord.", color=discord.Color.green())
         embed.set_thumbnail(url=datos["profilePicture"])
     else:
