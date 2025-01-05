@@ -65,7 +65,7 @@ async def on_ready():
     except Exception as e:
         print(e)
 
-    client.loop.create_task(beatleader.recive(client))
-    client.loop.create_task(scoresaber.recive(client))
+    client.loop.create_task(beatleader.recieve(client))
+    client.loop.create_task(scoresaber.recieve(client))
 
 client.run(os.getenv("token"))

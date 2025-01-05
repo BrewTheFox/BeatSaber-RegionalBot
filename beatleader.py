@@ -4,6 +4,7 @@ import json
 import os
 import requests
 import discord
+import asyncio
 
 jugadores = playerhandler.fetchjugadores()
 
@@ -27,7 +28,7 @@ def getplayerinfo(did:int) -> list:
     return embed, True
 
 
-async def recive(client:discord.Client):
+async def recieve(client:discord.Client):
     while True:
         try:
             async with websockets.connect("wss://sockets.api.beatleader.xyz/scores") as socket:
@@ -39,7 +40,7 @@ async def recive(client:discord.Client):
                         await playerhandler.checklocalplayerdata(client)
                         datos = json.loads(datos)
                         datos["Beatleader"] = True
-                        await playerhandler.playsplusone(datos["playerId"], "Beatleader", client)
+                        asyncio.create_task(playerhandler.playsplusone(datos["playerId"], "Beatleader", client))
                         if datos['country'] == os.getenv("pais") or str(datos["playerId"]) in jugadores.keys():
                             print(datos["player"]["name"])
                             print("Se registro un juego.")

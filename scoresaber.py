@@ -4,6 +4,7 @@ import json
 import websockets
 import playerhandler
 import os
+import asyncio
 
 jugadores = playerhandler.fetchjugadores()
 
@@ -27,7 +28,7 @@ def getplayerinfo(did:int) -> list:
     embed.add_field(name="**Si la consulta es para ti usa /vincular, si es para otro usuario pidele que vincule su cuenta.**", value=" ")
     return embed, True
 
-async def recive(client:discord.Client):
+async def recieve(client:discord.Client):
     print(client.guilds)
     while True:
         try:
@@ -44,7 +45,7 @@ async def recive(client:discord.Client):
                             gameid = datos["commandData"]["score"]['leaderboardPlayerInfo']["id"]
                             playerhandler.updatelocalplayerdata(gameid,datos)
                         else:
-                            await playerhandler.playsplusone(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"], "scoresaber", client)
+                            asyncio.create_task(playerhandler.playsplusone(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"], "scoresaber", client))
         except Exception as e: 
             try:
                 print("Ocurrio un error, reestableciendo")

@@ -6,12 +6,16 @@ import playerhandler
 import requests
 import json
 import re
-jugadores = saveapi.loadplayers()
+import asyncio
+
+jugadores = asyncio.run(saveapi.loadplayers())
 plays = 0
 pdata = {}
 lpdata = {}
 expresionss = re.compile("https://scoresaber\.com/u/([0-9]*)")
 expresionbl = re.compile("https://beatleader\.xyz/u/([0-9]*)")
+
+
 def updatelocalplayerdata(playerid:int, datos:dict):
     global lpdata
     playerid = str(playerid)
@@ -20,7 +24,6 @@ def updatelocalplayerdata(playerid:int, datos:dict):
     else:
         lpdata[playerid]["timesregistered"] += 1
         lpdata[playerid]["gameplayinfo"].update(datos)
-
 
 async def checklocalplayerdata(client:discord.Client):
     global lpdata
@@ -32,7 +35,7 @@ async def checklocalplayerdata(client:discord.Client):
                 del lpdata[jugador]
             except:
                 continue
-            await scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays)
+            asyncio.create_task(scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
             resetplays()
         elif clpdata[jugador]["time"] + 4 > time.time() and clpdata[jugador]["timesregistered"] == 1:
             print("Esperando...")
@@ -42,15 +45,16 @@ async def checklocalplayerdata(client:discord.Client):
                 del lpdata[jugador]
             except:
                 continue
-            await scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays)
+            asyncio.create_task(scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
             resetplays()
+
 def fetchjugadores() -> dict:
     return jugadores
 
 def setplayers(newjugadores:dict) -> dict:
     global jugadores
     jugadores = newjugadores
-    saveapi.saveplayers(jugadores)
+    asyncio.create_task(saveapi.saveplayers(jugadores))
     return jugadores
 
 def resetplays() -> None:
@@ -61,7 +65,7 @@ def fetchplays() -> int:
     global plays
     return plays
 
-async def playsplusone(playerid:int, leaderboard:str, client) -> None:
+async def playsplusone(playerid:int, leaderboard:str, client:discord.Client) -> None:
     global plays
     global pdata
     playerid = str(playerid)
