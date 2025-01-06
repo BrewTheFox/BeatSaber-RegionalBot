@@ -2,3 +2,5 @@ config.env
 __pycache__/
 save.csv
 .venv
+logs.log
+database.db

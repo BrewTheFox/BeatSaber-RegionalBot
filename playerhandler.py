@@ -1,71 +1,58 @@
-import saveapi
 import discord
 import time
 import scoreembed
-import playerhandler
 import aiohttp
 import json
 import re
 import asyncio
+import logging
+import classes
+import DataBaseManager
 
-jugadores = asyncio.run(saveapi.loadplayers())
 plays = 0
 pdata = {}
 lpdata = {}
-expresionss = re.compile("https://scoresaber\.com/u/([0-9]*)")
-expresionbl = re.compile("https://beatleader\.xyz/u/([0-9]*)")
+expresionss = re.compile("https://scoresaber\\.com/u/([0-9]*)")
+expresionbl = re.compile("https://beatleader\\.xyz/u/([0-9]*)")
 
-
-def updatelocalplayerdata(playerid:int, datos:dict):
-    global lpdata
-    playerid = str(playerid)
-    if not playerid in list(lpdata.keys()):
-        lpdata[playerid] = {"time":time.time(), "timesregistered":1, "gameplayinfo": datos}
-    else:
-        lpdata[playerid]["timesregistered"] += 1
-        lpdata[playerid]["gameplayinfo"].update(datos)
-
-async def checklocalplayerdata(client:discord.Client):
+async def CheckLocalPlayerData(client:discord.Client):
     global lpdata
     clpdata = dict(lpdata)
     for jugador in clpdata.keys():
-        if clpdata[jugador]["timesregistered"] == 1 and clpdata[jugador]["time"] + 6 < time.time():
-            print("No se esta jugando doble")
+        if clpdata[jugador]["timesregistered"] == 1 and clpdata[jugador]["time"] < time.time():
+            logging.info("No se esta jugando doble")
             try:
                 del lpdata[jugador]
-            except:
+            except NameError:
                 continue
             asyncio.create_task(scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
-            resetplays()
-        elif clpdata[jugador]["time"] + 4 > time.time() and clpdata[jugador]["timesregistered"] == 1:
-            print("Esperando...")
+            ResetPlays()
+        elif clpdata[jugador]["time"] > time.time():
+            continue
         else:
-            print("Se esta jugando doble")
+            logging.info("Se esta jugando doble")
             try:
                 del lpdata[jugador]
-            except:
+            except NameError:
                 continue
             asyncio.create_task(scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
-            resetplays()
+            ResetPlays()
 
-def fetchjugadores() -> dict:
-    return jugadores
-
-def setplayers(newjugadores:dict) -> dict:
-    global jugadores
-    jugadores = newjugadores
-    asyncio.create_task(saveapi.saveplayers(jugadores))
-    return jugadores
-
-def resetplays() -> None:
+def ResetPlays() -> None:
     global plays
     plays = 0
 
-def fetchplays() -> int:
-    global plays
-    return plays
+def UpdateLocalPlayerData(playerid:int, datos:dict):
+    global lpdata
+    playerid = str(playerid)
+    if not playerid in list(lpdata.keys()):
+        lpdata[playerid] = {"time":time.time() + 6, "timesregistered":1, "gameplayinfo": datos}
+    else:
+        if lpdata[playerid]["gameplayinfo"].get("Scoresaber") != datos.get("Scoresaber") or lpdata[playerid]["gameplayinfo"].get("Beatleader") != datos.get("Beatleader"):
+            lpdata[playerid]["timesregistered"] += 1
+            lpdata[playerid]["gameplayinfo"].update(datos)
 
-async def playsplusone(playerid:int, leaderboard:str, client:discord.Client) -> None:
+async def PlaysPlusOne(playerid:int, leaderboard:str, client:discord.Client) -> None:
     global plays
     global pdata
     playerid = str(playerid)
@@ -86,17 +73,21 @@ async def playsplusone(playerid:int, leaderboard:str, client:discord.Client) -> 
             if datos in pdata.keys():
                 del pdata[datos]
 
-async def link(link:str, uid:int):
+
+async def Link(link:str, uid:int):
     session = aiohttp.ClientSession()
-    jugadores = playerhandler.fetchjugadores()
+    player = DataBaseManager.LoadPlayerDiscord(str(uid))
+
+    if player:
+        embed = discord.Embed(title="Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero.", color=discord.Color.red())
+        return embed
+    
     link = link.replace("www.", "")
     if not link:
         embed = discord.Embed(title="No se puede vincular la cuenta sin un link valido.", color=discord.Color.red())
         return embed
-    elif not link.startswith("https://scoresaber.com/u/") and not link.startswith("https://beatleader.xyz/u/"):
-        embed = discord.Embed(title="Este servicio no se encuentra disponible, porfavor, solo scoresaber o beatleader.", color=discord.Color.red())
-        return embed
-    else:
+    
+    if link.startswith("https://scoresaber.com/u/") or link.startswith("https://beatleader.xyz/u/"):
         if link.startswith("https://scoresaber.com/u/"):
             id = expresionss.findall(link)[0]
             url = f"https://scoresaber.com/api/player/{id}/full"
@@ -109,43 +100,36 @@ async def link(link:str, uid:int):
                 response = await request.text()
                 status = request.status
                 await session.close()
-        if '"errorMessage"' in response or status == 404:
-            embed = discord.Embed(title="La cuenta introducida es invalida ;( intentalo denuevo.", color=discord.Color.red())
-            return embed
-        else:
+
+        if not '"errorMessage"' in response or status == 404:
             datos = json.loads(response)
-            for jugador in jugadores.keys():
-                if jugadores[jugador]["discord"] == str(uid):
-                    embed = discord.Embed(title="Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero.", color=discord.Color.red())
-                    return embed
-            if not id in jugadores.keys():
+            if DataBaseManager.LoadPlayerID(str(id)):
+                embed = discord.Embed(title="¿A quien engañas?", color=discord.Color.red())
+                embed.add_field(name="Esta cuenta esta registrada por otro usuario", value=" ")
+                return embed
+            else:
                 embed = discord.Embed(title=f"Hola, {datos['name']} ¡Bienvenido!", color=discord.Color.green())
                 embed.add_field(name="Fuiste registrado correctamente.", value=" ")
                 if link.startswith("https://beatleader.xyz/u/"):
                     embed.set_thumbnail(url=datos["avatar"])
                 if link.startswith("https://scoresaber.com/u/"):
                     embed.set_thumbnail(url=datos["profilePicture"])
-                jugadores[str(id)] = {"discord":str(uid), "reto": {}}
-                playerhandler.setplayers(jugadores)
-                return embed
-            else:
-                embed = discord.Embed(title="¿A quien engañas?", color=discord.Color.red())
-                embed.add_field(name="Esta cuenta esta registrada por otro usuario", value=" ")
+                DataBaseManager.InsertPlayer(classes.player(id=str(id), discord=str(uid), challenge=None, total_points=0, points=None))
                 return embed
             
-async def unlink(uid:int):
+        else:
+            embed = discord.Embed(title="La cuenta introducida es invalida ;( intentalo denuevo.", color=discord.Color.red())
+            return embed
+    else:
+        embed = discord.Embed(title="Este servicio no se encuentra disponible, porfavor, solo scoresaber o beatleader.", color=discord.Color.red())
+        return embed
+
+            
+async def Unlink(uid:int):
     session = aiohttp.ClientSession()
-    jugadores = playerhandler.fetchjugadores()
-    encontrado = False
-    for usuario in jugadores:
-        if jugadores[usuario]['discord'] == str(uid):
-            user = usuario
-            encontrado = True
-            del jugadores[usuario]
-            playerhandler.setplayers(jugadores)
-            break
-    if encontrado == True:
-        url = f"https://scoresaber.com/api/player/{user}/full"
+    player = DataBaseManager.LoadPlayerDiscord(str(uid))
+    if player:
+        url = f"https://scoresaber.com/api/player/{player.id}/full"
         async with session as ses:
             async with ses.get(url) as request:
                 datos = json.loads(await request.text())
