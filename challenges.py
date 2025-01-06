@@ -17,7 +17,7 @@ def checkchallenge(id:str, pp:int, estrellas:float, puntaje:int) -> list:
 def generatechallenge(uid:int, dificultad:str):
     """Solamente genera un reto en base al id del jugador y la dificultad solicitada"""
     retos = ["score", "stars", "pp"]
-    challenge, _, _ = DataBaseManager.GetChallengeDiscord(str(uid))
+    challenge = DataBaseManager.GetChallengeDiscord(str(uid))
     player = DataBaseManager.LoadPlayerDiscord(str(uid))
     if not player:
         embed = discord.Embed(title="Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion.", color=discord.Color.red())
