@@ -62,7 +62,7 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
             plataforma = "ScoreSaber y Beatleader"
             buttons.AddButton(f"{playername} Beatleader", f"https://beatleader.com/u/{playerid}")
             buttons.AddButton(f"{playername} Scoresaber", f"https://scoresaber.com/u/{playerid}")
-
+            cancion = await beatsaver.songinfo(hashcancion, dificultad)
         except Exception as e:
             logging.error(f"Ocurrio un {e} Al momento de asignar las variables multiples para el jugador {playername}")
     if "Beatleader" in datos.keys() and not "Scoresaber" in datos.keys():
@@ -87,6 +87,7 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
             fallos = - int(datos["scoreImprovement"]["badCuts"] + datos["scoreImprovement"]["missedNotes"])
             replay = datos["replay"]
             plataforma = "Beatleader"
+            cancion = await beatsaver.songinfo(hashcancion, f"_{dificultad}_{modo}")
             buttons.AddButton(playername, f"https://beatleader.com/u/{playerid}")
         except Exception as e:
             logging.error(f"Ocurrio un {e} Al momento de asignar las variables de BeatLeader para el jugador {playername}")
@@ -110,6 +111,7 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
             dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
             fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
             plataforma = "ScoreSaber"
+            cancion = await beatsaver.songinfo(hashcancion, dificultad)
             buttons.AddButton(playername, f"https://scoresaber.com/u/{playerid}")
         except Exception as e:
             logging.error(f"Ocurrio un error {e} Al momento de asignar las variables de ScoreSaber para el jugador {playername}")
@@ -137,7 +139,6 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
         embed.add_field(name=GetString("Average", "ScoreEmbed"), value=str(round((puntajebase / puntajemaximo) * 100, 2)) + "%")
         embed.add_field(name=GetString("Stars", "ScoreEmbed"), value=str(estrellas))
 
-        cancion = await beatsaver.songinfo(hashcancion, f"_{dificultad}_{modo}")
         if not "error" in cancion.keys():
             embed.add_field(name=GetString("GoodvsWrong", "ScoreEmbed"), value=str(cancion["notas"] - fallos) + "/" + str(cancion["notas"]))
             embed.add_field(name=GetString("Difficulty", "ScoreEmbed"), value=cancion["dificultad"])
