@@ -1,0 +1,85 @@
+{
+    "Country":"CO",
+    "ChallengeParams":{
+        "Easy":{
+            "Score":[150, 600],
+            "Stars":[1,5],
+            "PP":[10,100],
+            "Color":"0x3498DB"
+        },
+        "Hard":{
+            "Score":[600, 1200],
+            "Stars":[5,9],
+            "PP":[100,150],
+            "Color":"0x2ECC71"            
+        },
+
+        "Expert+":{
+            "Score":[1200, 2000],
+            "Stars":[10,13],
+            "PP":[150,200],
+            "Color":"0xE67E22"       
+        }
+    },
+
+    "Strings":{
+        "Misc":{
+            "AskUserToLink":"**Si la consulta es para ti usa /vincular, si es para otro usuario pidele que vincule su cuenta.**",
+            "NoLinkedAccountUser":"¡No hay una cuenta de scoresaber vinculada a este usuario!",
+            "UserHasNoLinkedAccount":"Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion."
+        },
+        "ProfileRequest":{
+            "ProfileOf":"¡Perfil de {{name}}!",
+            "PerformancePoints":"PP:",
+            "TotalScore":"Puntaje total:",
+            "TotalPlays":"Juegos totales:"
+        },
+
+        "Challenges":{
+            "AlreadyChallenged":"¡Ya solicitaste un reto /cancelar si no lo quieres!",
+            "UserHasNoChallenge":"No has solicitado ningun reto :(",
+            "ScoreChallenge":"¡Consigue mas de {{var}} puntos en un nivel!",
+            "StarsChallenge":"¡Pasate un nivel de {{var}} estrellas o mas!",
+            "PPChallenge":"¡Pasate un nivel con mas de {{var}} PP!",
+            "CancelChallenge":"Cancelaste tu reto :(",
+            "UserCompletedChallenge":"¡Muy bien {{name}}, Lograste superar el reto!",
+            "Category":"Categoria:",
+            "OvercomeValue":"Valor a superar:",
+            "ObtainedValue":"Valor obtenido:"
+        },
+
+        "ScoreEmbed":{
+            "EmbedTitle":"¡**{{name}}** Logro!",
+            "ToPass":"Pasarse satisfactoriamente **{{song}}**",
+            "Average":"Exactitud:",
+            "Stars":"Estrellas: ",
+            "Score":"Puntaje: ",
+            "Difficulty":"Dificultad",
+            "Device":"Dispositivo",
+            "AddedPerformancePoints":"PP añadido: ",
+            "GoodvsWrong":"Notas logradas:",
+            "LeftController":"Control Izquierdo:",
+            "RightController":"Control derecho:",
+            "Plataform":"Plataforma:",
+            "ViewReplay":"Ver replay",
+            "DownloadSong":"Descargar la cancion",
+            "LastGameBefore":"El anterior juego de alguien de tu pais fue hace {{var}} partidas."
+        },
+
+        "UserHandling":{
+            "NoAccountToUnlink":"No tienes una cuenta que desvincular",
+            "SuccessUnlink":"La cuenta {{name}} se ha desvinculado de tu discord.",
+            "ServiceUnavailable":"Este servicio no se encuentra disponible, porfavor, solo scoresaber o beatleader.",
+            "InvalidAccount":"La cuenta introducida es invalida ;( intentalo denuevo.",
+            "RegisteredCorrectly":"Fuiste registrado correctamente.",
+            "WelcomeUser":"Hola, {{name}} ¡Bienvenido!",
+            "AccountRegisteredByOtherUserTitle":"¿A quien engañas?",
+            "AccountRegisteredByOtherUserContent":"Esta cuenta esta registrada por otro usuario",
+            "InvalidURL":"No se puede vincular la cuenta sin un link valido.",
+            "UserAlreadyLinkedAccount":"Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero."
+        },
+        "Status": {
+            "Status":"Hace {{var}} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!"
+        }
+    }
+}

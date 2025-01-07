@@ -50,21 +50,22 @@ class db():
             return False
         self.curr.execute("UPDATE players SET challenge = ?, points = ?, difficulty = ? WHERE discord=?;", (type, points, difficulty, discord))
         self.conn.commit()
+        return True
     
-    def GetChallenge(self, id:str) -> list | bool:
+    def GetChallenge(self, id:str) -> list:
         """Returns the challenge assigned for a user in the format Challenge, Points, Difficulty"""
         self.curr.execute("SELECT challenge, points, difficulty FROM players WHERE id=?", (id,))
         data = self.curr.fetchone()
         if data is None:
-            return False
+            return [None, None, None]
         return data[0], data[1], data[2]
     
-    def GetChallengeDiscord(self, discord:str) -> list | bool:
+    def GetChallengeDiscord(self, discord:str) -> list:
         """Returns the challenge assigned for a user in the format Challenge, Points, Difficulty"""
         self.curr.execute("SELECT challenge, points, difficulty FROM players WHERE discord=?", (discord,))
         data = self.curr.fetchone()
         if data is None:
-            return False
+            return [None, None, None]
         return data[0], data[1], data[2]   
     
     def CompleteChallenge(self, id:str, points:int):

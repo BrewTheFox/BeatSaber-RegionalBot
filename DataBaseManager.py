@@ -8,19 +8,25 @@ def GetChallenge(id:str):
     return database.GetChallenge(id)
 
 def GetChallengeDiscord(discord:str):
-    return database.GetChallenge(discord)
+    return database.GetChallengeDiscord(discord)
 
 def CompleteChallenge(id:str):
-    _, _, difficulty = database.GetChallenge(id)
-    if difficulty == "Easy":
-        database.CompleteChallenge(id, 500)
-    if difficulty == "Hard":
-        database.CompleteChallenge(id, 1000)
-    if difficulty == "Expert+":
-        database.CompleteChallenge(id, 2000)
-
-def CancelChallenge(id:str):
-    database.CompleteChallenge(id, 0)
+    difficulty = database.GetChallenge(id)
+    if difficulty:
+        difficulty = difficulty[2]
+        match difficulty:
+            case ("Easy"):
+                database.CompleteChallenge(id, 500)
+            case("Hard"):
+                database.CompleteChallenge(id, 1000)
+            case("Expert+"):
+                database.CompleteChallenge(id, 2000)
+            case _:
+                database.CompleteChallenge(id, 0)
+    
+def CancelChallenge(discord:str):
+    player = database.LoadPlayerDiscord(discord)
+    database.CompleteChallenge(player.id, 0)
 
 def SetChallenge(discord:str, difficulty:str, type:str, points:int):
     return database.SetChallenge(discord, difficulty, type, points)
@@ -40,5 +46,5 @@ def SetChannel(channel_id:str, channel_type:int):
 def RemoveChannel(channel_id:str):
     database.RemoveChannel(channel_id)
 
-def GetChannels(channel_type:int) -> list | bool:
+def GetChannels(channel_type:int) -> list:
     return database.GetChannels(channel_type)

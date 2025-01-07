@@ -1,87 +1,51 @@
 import discord
 import random
 import DataBaseManager
+from embeds import ErrorEmbed
+from loadconfig import GetString, GetConfiguration
 
-
-def checkchallenge(id:str, pp:int, estrellas:float, puntaje:int) -> list:
-    """Valida que el reto se haya cumplido"""
-
+def CheckChallenge(id:str, pp:int, estrellas:float, puntaje:int) -> list:
+    """Returns a list where the first element is if the challenge was completed and the second one is the score obtanied"""
     challenge, points, _ = DataBaseManager.GetChallenge(id)
-    if challenge == "pp":
-        return [pp >= points, pp]
-    if challenge == "stars":
-        return [estrellas >= points, estrellas]
-    if challenge == "score":
-        return [puntaje >= points, puntaje]
+    match challenge:
+        case("pp"):
+            return [pp >= points, pp]
+        case("stars"):
+            return [estrellas >= points, estrellas]
+        case("score"):
+            return [puntaje >= points, puntaje]
 
-def generatechallenge(uid:int, dificultad:str):
-    """Solamente genera un reto en base al id del jugador y la dificultad solicitada"""
-    retos = ["score", "stars", "pp"]
+
+def GenerateChallenge(uid:int, difficulty:str):
+    """This generates a challenge given a difficulty"""
+    retos = ["Score", "Stars", "PP"]
     challenge = DataBaseManager.GetChallengeDiscord(str(uid))
     player = DataBaseManager.LoadPlayerDiscord(str(uid))
     if not player:
-        embed = discord.Embed(title="Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion.", color=discord.Color.red())
+        embed = ErrorEmbed(GetString("UserHasNoLinkedAccount", "Misc"))
         return embed
-    if challenge:
-        embed = discord.Embed(title=f"¡Ya solicitaste un reto /cancelar si no lo quieres!", color=discord.Color.red())
+    if challenge[0]:
+        embed = ErrorEmbed(GetString("AlreadyChallenged", "Challenges"))
         return embed
-    
     kind = random.choice(retos)
-    if dificultad == "Facil":
-        if kind == "score":
-            score = random.randint(150, 600) * 1000
-            DataBaseManager.SetChallenge(str(uid), "Easy", "score", score)
-            embed = discord.Embed(title=f"¡Consigue mas de {score} puntos en un nivel!", color=discord.Color.blue())
-        if kind == "stars":
-            stars = random.randint(1,5)
-            DataBaseManager.SetChallenge(str(uid), "Easy", "stars", stars)
-            embed = discord.Embed(title=f"¡Pasate un nivel de {stars} estrellas o mas!", color=discord.Color.blue())
-        if kind == "pp":
-            quantity = random.randint(10,100)
-            DataBaseManager.SetChallenge(str(uid), "Easy", "pp", quantity)
-            embed = discord.Embed(title=f"¡Pasate un nivel con mas de {quantity} PP!", color=discord.Color.blue())
-        return embed
-    
-    if dificultad == "Dificil":
-        if kind == "score":
-            score = random.randint(600, 1200) * 1000
-            DataBaseManager.SetChallenge(str(uid), "Hard", "score", score)
-            embed = discord.Embed(title=f"¡Consigue mas de {score} puntos en un nivel!", color=discord.Color.green())
-        if kind == "stars":
-            stars = random.randint(5,9)
-            DataBaseManager.SetChallenge(str(uid), "Hard", "stars", stars)
-            embed = discord.Embed(title=f"¡Pasate un nivel de {stars} estrellas o mas!", color=discord.Color.green())
-        if kind == "pp":
-            quantity = random.randint(100,250)
-            DataBaseManager.SetChallenge(str(uid), "Hard", "pp", quantity)
-            embed = discord.Embed(title=f"¡Pasate un nivel con mas de {quantity} PP!", color=discord.Color.green())
-        return embed
-        
-    if dificultad == "Expert+":
-        if kind == "score":
-            score = random.randint(1200, 2000) * 1000
-            DataBaseManager.SetChallenge(str(uid), "Expert+", "score", score)
-            embed = discord.Embed(title=f"¡Consigue mas de {score} puntos en un nivel!", color=discord.Color.orange())
-        if kind == "stars":
-            stars = random.randint(10,13)
-            DataBaseManager.SetChallenge(str(uid), "Expert+", "stars", stars)
-            embed = discord.Embed(title=f"¡Pasate un nivel de {stars} estrellas o mas!", color=discord.Color.orange())
-        if kind == "pp":
-            quantity = random.randint(400,550)
-            DataBaseManager.SetChallenge(str(uid), "Expert+", "pp", quantity)
-            embed = discord.Embed(title=f"¡Pasate un nivel con mas de {quantity} PP!", color=discord.Color.orange())
-        return embed
+    values = GetConfiguration()["ChallengeParams"][difficulty][kind]
+    value = random.randint(values[0], values[1])
+    if kind == "Score":
+        value *= 1000
+    DataBaseManager.SetChallenge(str(uid), difficulty, kind.lower(), value)
+    embed = discord.Embed(title=GetString(kind+"Challenge", "Challenges").replace("{{var}}", str(value)), color=discord.Colour.from_str(GetConfiguration()["ChallengeParams"][difficulty]["Color"]))
+    return embed
 
-def cancelchallenge(uid:int) -> list:
-    """Cancela el reto solicitado por el jugador"""
+def CancelChallenge(uid:int) -> list:
+    """Cancels the challenge given by the player"""
     player = DataBaseManager.LoadPlayerDiscord(str(uid))
-    challenge, _, _ = DataBaseManager.GetChallengeDiscord(str(uid))
+    challenge = DataBaseManager.GetChallengeDiscord(str(uid))
+    if not challenge[0]:
+        embed = ErrorEmbed(GetString("UserHasNoChallenge", "Challenges"))
+        return embed       
     if not player:
-        embed = discord.Embed(title=f"Si quieres usar este comando tendras que registrarte con /vincular <link>", color=discord.Color.red())
-        return embed
-    if not challenge:
-        embed = discord.Embed(title=f"No has solicitado ningun reto :(", color=discord.Color.red())
-        return embed        
-    embed = discord.Embed(title=f"Cancelaste tu reto :(", color=discord.Color.red())
-    DataBaseManager.CancelChallenge()
+        embed = ErrorEmbed(GetString("UserHasNoLinkedAccount", "Misc"))
+        return embed 
+    embed = ErrorEmbed(GetString("CancelChallenge", "Challenges"))
+    DataBaseManager.CancelChallenge(str(uid))
     return embed

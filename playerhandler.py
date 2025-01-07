@@ -8,6 +8,8 @@ import asyncio
 import logging
 import classes
 import DataBaseManager
+from embeds import ErrorEmbed, SuccessEmbed
+from loadconfig import GetString
 
 plays = 0
 pdata = {}
@@ -25,7 +27,7 @@ async def CheckLocalPlayerData(client:discord.Client):
                 del lpdata[jugador]
             except NameError:
                 continue
-            asyncio.create_task(scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
+            asyncio.create_task(scoreembed.PostEmbed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
             ResetPlays()
         elif clpdata[jugador]["time"] > time.time():
             continue
@@ -35,7 +37,7 @@ async def CheckLocalPlayerData(client:discord.Client):
                 del lpdata[jugador]
             except NameError:
                 continue
-            asyncio.create_task(scoreembed.postembed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
+            asyncio.create_task(scoreembed.PostEmbed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
             ResetPlays()
 
 def ResetPlays() -> None:
@@ -62,13 +64,13 @@ async def PlaysPlusOne(playerid:int, leaderboard:str, client:discord.Client) -> 
     for datos in copypdata:
         if copypdata[datos]["time"] + 6 < time.time() or copypdata[datos]["leaderboard"] is leaderboard:
             plays += 1
-            actividad = discord.Game(f"Hace {str(plays)} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!", type=1)
+            actividad = discord.Game(GetString("Status", "Status").replace("{{var}}", str(plays)), type=1)
             await client.change_presence(status=discord.Status.idle, activity=actividad)
             if datos in pdata.keys():
                 del pdata[datos]
         else:
             plays += 1
-            actividad = discord.Game(f"Hace {str(plays)} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!", type=1)
+            actividad = discord.Game(GetString("Status", "Status").replace("{{var}}", str(plays)), type=1)
             await client.change_presence(status=discord.Status.idle, activity=actividad)
             if datos in pdata.keys():
                 del pdata[datos]
@@ -79,12 +81,12 @@ async def Link(link:str, uid:int):
     player = DataBaseManager.LoadPlayerDiscord(str(uid))
 
     if player:
-        embed = discord.Embed(title="Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero.", color=discord.Color.red())
+        embed = ErrorEmbed(GetString("UserAlreadyLinkedAccount", "UserHandling"))
         return embed
     
     link = link.replace("www.", "")
     if not link:
-        embed = discord.Embed(title="No se puede vincular la cuenta sin un link valido.", color=discord.Color.red())
+        embed = ErrorEmbed(title=GetString("InvalidURL", "UserHandling"))
         return embed
     
     if link.startswith("https://scoresaber.com/u/") or link.startswith("https://beatleader.xyz/u/"):
@@ -104,12 +106,12 @@ async def Link(link:str, uid:int):
         if not '"errorMessage"' in response or status == 404:
             datos = json.loads(response)
             if DataBaseManager.LoadPlayerID(str(id)):
-                embed = discord.Embed(title="¿A quien engañas?", color=discord.Color.red())
-                embed.add_field(name="Esta cuenta esta registrada por otro usuario", value=" ")
+                embed = ErrorEmbed(GetString("AccountRegisteredByOtherUserTitle", "UserHandling"))
+                embed.add_field(name=GetString("AccountRegisteredByOtherUserTitleContent", "UserHandling"), value=" ")
                 return embed
             else:
-                embed = discord.Embed(title=f"Hola, {datos['name']} ¡Bienvenido!", color=discord.Color.green())
-                embed.add_field(name="Fuiste registrado correctamente.", value=" ")
+                embed = SuccessEmbed(GetString("WelcomeUser", "UserHandling").replace("{{name}}", datos['name']))
+                embed.add_field(name=GetString("RegisteredCorrectly", "UserHandling"), value=" ")
                 if link.startswith("https://beatleader.xyz/u/"):
                     embed.set_thumbnail(url=datos["avatar"])
                 if link.startswith("https://scoresaber.com/u/"):
@@ -118,10 +120,10 @@ async def Link(link:str, uid:int):
                 return embed
             
         else:
-            embed = discord.Embed(title="La cuenta introducida es invalida ;( intentalo denuevo.", color=discord.Color.red())
+            embed = discord.Embed(title=GetString("InvalidAccount", "UserHandling"), color=discord.Color.red())
             return embed
     else:
-        embed = discord.Embed(title="Este servicio no se encuentra disponible, porfavor, solo scoresaber o beatleader.", color=discord.Color.red())
+        embed = discord.Embed(title=GetString("ServiceUnavailable", "UserHandling"), color=discord.Color.red())
         return embed
 
             
@@ -133,8 +135,8 @@ async def Unlink(uid:int):
         async with session as ses:
             async with ses.get(url) as request:
                 datos = json.loads(await request.text())
-        embed = discord.Embed(title=f"La cuenta {datos['name']} se ha desvinculado de tu discord.", color=discord.Color.green())
+        embed = SuccessEmbed(title=GetString("SuccessUnlink", "UserHandling").replace("{{name}}", datos['name']))
         embed.set_thumbnail(url=datos["profilePicture"])
     else:
-        embed = discord.Embed(title=f"No tienes una cuenta que desvincular.", color=discord.Color.red())
+        embed = ErrorEmbed(GetString("NoAccountToUnlink", "UserHandling"))
     return embed

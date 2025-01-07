@@ -49,12 +49,12 @@ async def unlink(interaction: discord.Interaction):
 
 @tree.command(name="cancelar", description="Cancela el reto actual.")
 async def cancel(interaction: discord.Interaction):
-    embed = challenges.cancelchallenge(interaction.user.id)
+    embed = challenges.CancelChallenge(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @tree.command(name="reto", description="Asigna un reto dentro del juego.")
-async def generatechallenge(interaction: discord.Interaction, dificultad: Literal["Facil", "Dificil", "Expert+"]):
-    embed = challenges.generatechallenge(interaction.user.id, dificultad)
+async def generatechallenge(interaction: discord.Interaction, dificultad: Literal["Easy", "Hard", "Expert+"]):
+    embed = challenges.GenerateChallenge(interaction.user.id, dificultad)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @tree.command(name="vincular", description="Vincula una cuenta de beatsaber con tu cuenta de discord.")
@@ -91,7 +91,7 @@ async def on_ready():
     except Exception as e:
         logging.error(e)
 
-    client.loop.create_task(beatleader.recieve(client))
-    client.loop.create_task(scoresaber.recieve(client))
-    client.loop.create_task(scoreembed.updatelist())
+    client.loop.create_task(beatleader.Recieve(client))
+    client.loop.create_task(scoresaber.Recieve(client))
+    client.loop.create_task(scoreembed.UpdateList())
 client.run(os.getenv("token"))
