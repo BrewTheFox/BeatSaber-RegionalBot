@@ -7,7 +7,7 @@ import asyncio
 import logging
 import DataBaseManager
 from loadconfig import GetString, GetConfiguration
-from embeds import PlayerEmbed, ErrorWithFieldsEmbed
+from Embeds import PlayerEmbed, ErrorWithFieldsEmbed
 
 async def GetPlayerInfo(did:int) -> list:
     session = aiohttp.ClientSession()

@@ -1,7 +1,7 @@
 import discord
 import random
 import DataBaseManager
-from embeds import ErrorEmbed
+from Embeds import ErrorEmbed
 from loadconfig import GetString, GetConfiguration
 
 def CheckChallenge(id:str, pp:int, estrellas:float, puntaje:int) -> list:

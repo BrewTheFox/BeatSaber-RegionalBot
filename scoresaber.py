@@ -6,8 +6,11 @@ import playerhandler
 import asyncio
 import logging
 import DataBaseManager
-from embeds import PlayerEmbed, ErrorWithFieldsEmbed
+from Embeds import PlayerEmbed, ErrorWithFieldsEmbed
 from loadconfig import GetString, GetConfiguration
+from math import ceil
+
+COUNTRY = GetConfiguration()['Country']
 
 async def GetPlayerInfo(did:int) -> list:
     session = aiohttp.ClientSession()
@@ -23,6 +26,33 @@ async def GetPlayerInfo(did:int) -> list:
     embed = ErrorWithFieldsEmbed(GetString("AskUserToLink", "Misc"), [{"name":GetString("NoLinkedAccountUser", "Misc"), "value":" "}])
     return embed, True
 
+async def GetPlayerPassedOther(addedPP:int, PlayerID:str):
+    async with aiohttp.ClientSession() as ses:
+        async with ses.get(f"https://scoresaber.com/api/player/{PlayerID}/full") as request:
+            playerinfo = json.loads(await request.text())
+    CurrentRank = playerinfo["countryRank"]
+    Page = int(ceil(CurrentRank / 50))
+    Specific = CurrentRank - (Page - 1) * 50 - 1
+
+    async with aiohttp.ClientSession() as ses:
+        async with ses.get(f"https://scoresaber.com/api/players?countries={COUNTRY}&page={Page}") as request:
+            data = json.loads(await request.text())
+    PPBefore = data["players"][Specific]["pp"] - addedPP
+    if Specific != len(data["players"]) - 1:
+        PPAdversarial = data["players"][Specific + 1]["pp"]
+    else:
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(f"https://scoresaber.com/api/players?countries={COUNTRY}&page={Page + 1}") as request:
+                data = json.loads(await request.text())
+        try:
+            PPAdversarial = data["players"][0]["pp"]
+        except:
+            return [False, None, 0, 0]
+    if PPAdversarial < PPBefore:
+        return [False, None, 0, 0]
+    return [True, data["players"][Specific + 1]["name"], data["players"][Specific + 1]["id"], PPAdversarial - PPBefore]
+
+
 async def Recieve(client:discord.Client):
     while True:
         try:
@@ -34,7 +64,7 @@ async def Recieve(client:discord.Client):
                         data = json.loads(data)
                         if data.get("commandData"):
                             data["Scoresaber"] = True
-                            if data["commandData"]["score"]['leaderboardPlayerInfo']['country'] == GetConfiguration()['Country'] or DataBaseManager.LoadPlayerID(str(data["commandData"]["score"]['leaderboardPlayerInfo']["id"])):
+                            if data["commandData"]["score"]['leaderboardPlayerInfo']['country'] == COUNTRY or DataBaseManager.LoadPlayerID(str(data["commandData"]["score"]['leaderboardPlayerInfo']["id"])):
                                 logging.info(f"Se registro un Juego del jugador {data['commandData']['score']['leaderboardPlayerInfo']['name']}")
                                 playerid = data["commandData"]["score"]['leaderboardPlayerInfo']["id"]
                                 playerhandler.UpdateLocalPlayerData(playerid, data)

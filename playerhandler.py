@@ -1,6 +1,6 @@
 import discord
 import time
-import scoreembed
+import EmbedPoster
 import aiohttp
 import json
 import re
@@ -8,7 +8,7 @@ import asyncio
 import logging
 import classes
 import DataBaseManager
-from embeds import ErrorEmbed, SuccessEmbed
+from Embeds import ErrorEmbed, SuccessEmbed
 from loadconfig import GetString
 
 plays = 0
@@ -27,7 +27,7 @@ async def CheckLocalPlayerData(client:discord.Client):
                 del lpdata[jugador]
             except NameError:
                 continue
-            asyncio.create_task(scoreembed.PostEmbed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
+            asyncio.create_task(EmbedPoster.PostEmbeds(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
             ResetPlays()
         elif clpdata[jugador]["time"] > time.time():
             continue
@@ -37,7 +37,7 @@ async def CheckLocalPlayerData(client:discord.Client):
                 del lpdata[jugador]
             except NameError:
                 continue
-            asyncio.create_task(scoreembed.PostEmbed(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
+            asyncio.create_task(EmbedPoster.PostEmbeds(datos=clpdata[jugador]["gameplayinfo"], client=client, gamestill=plays))
             ResetPlays()
 
 def ResetPlays() -> None:

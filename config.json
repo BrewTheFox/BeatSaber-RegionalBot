@@ -1,5 +1,5 @@
 {
-    "Country":"CO",
+    "Country":"US",
     "ChallengeParams":{
         "Easy":{
             "Score":[150, 600],
@@ -57,6 +57,8 @@
             "Difficulty":"Dificultad",
             "Device":"Dispositivo",
             "AddedPerformancePoints":"PP añadido: ",
+            "AddedPerformancePointsBeatLeader":"PP añadido (BL): ",
+            "AddedPerformancePointsScoreSaber":"PP añadido (SS): ",
             "GoodvsWrong":"Notas logradas:",
             "LeftController":"Control Izquierdo:",
             "RightController":"Control derecho:",
@@ -80,6 +82,10 @@
         },
         "Status": {
             "Status":"Hace {{var}} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!"
+        },
+        "Overcome": {
+            "OvercomeTitle":"!**{{name1}}** Logro superar a **{{name2}}** en el leaderboard!",
+            "OvercomeDescription":"¡Con tan solo {{var}} puntos de diferencia!"
         }
     }
 }

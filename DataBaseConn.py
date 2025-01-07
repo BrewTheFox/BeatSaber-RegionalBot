@@ -79,7 +79,7 @@ class db():
         self.conn.commit()
     
     def SetChannel(self, channel_id:str, channel_type:int):
-        """Saves the channel of certain thing on the database 0 for Challenges and 1 for Scores"""
+        """Saves the channel of certain thing on the database 0 for Challenges, 1 for Scores, 2 For Player Feed"""
         self.RemoveChannel(channel_id)
         self.curr.execute("INSERT into servers (channel, channel_type) VALUES (?, ?);", (channel_id, channel_type))
         self.conn.commit()

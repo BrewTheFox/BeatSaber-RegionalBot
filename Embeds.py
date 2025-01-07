@@ -1,44 +1,64 @@
 import discord
-import beatsaver
-import challenges
-import aiohttp
-import asyncio
-import re
+from loadconfig import GetString, GetConfiguration
 import logging
-import DataBaseManager
-import classes
-from loadconfig import GetString
+from classes import Buttons
+import beatsaver
 
-HMDs = {"256": "Quest 2",    "512": "Quest 3",    "64": "Valve Index",    "513": "Quest 3S",    "1": "Rift CV1",    "2": "Vive",    "60": "Pico 4",    "61": "Quest Pro",    "70": "PS VR2",    "8": "Windows Mixed Reality",    "16": "Rift S",    "65": "Controllable",    "32": "Quest",    "4": "Vive Pro",    "35": "Vive Pro 2",    "128": "Vive Cosmos",    "36": "Vive Elite",    "47": "Vive Focus",    "38": "Pimax 8K",    "39": "Pimax 5K",    "40": "Pimax Artisan",    "33": "Pico Neo 3",    "34": "Pico Neo 2",    "41": "HP Reverb",    "42": "Samsung WMR",    "43": "Qiyu Dream",    "45": "Lenovo Explorer",    "46": "Acer WMR",    "66": "Bigscreen Beyond",    "67": "NOLO Sonic",    "68": "Hypereal",    "48": "Arpara",    "49": "Dell Visor",    "71": "MeganeX VG1",    "55": "Huawei VR",    "56": "Asus WMR",    "51": "Vive DVT",    "52": "glasses20",    "53": "Varjo",    "69": "Varjo Aero",    "54": "Vaporeon",    "57": "Cloud XR",    "58": "VRidge",    "50": "e3",    "59": "Medion Eraser",    "37": "Miramar",    "0": "Unknown headset",    "44": "Disco"}
+def PlayerEmbed(color:discord.Colour, data:dict) -> discord.Embed:
+    embed = discord.Embed(title=GetConfiguration["strings"]["ProfileRequest"]["ProfileOf"].replace("{{name}}", data["name"]), color=color)
+    embed.set_thumbnail(url=data['avatar'])
+    embed.add_field(name="🌎", value=f"#{data['rank']}", inline=True)
+    code_points = [127397 + ord(char) for char in data['country'].upper()]
+    embed.add_field(name=''.join(chr(code) for code in code_points), value=f'#{data["countryRank"]}', inline=True)
+    embed.add_field(name=GetString("PerformancePoints"), value=str(data["pp"]), inline=False)
+    embed.add_field(name=GetString("TotalScore"), value=str('{:20,.0f}'.format(data["scoreStats"]["totalScore"])), inline=False)
+    embed.add_field(name=GetString("TotalPlays"), value=str(data["scoreStats"]["totalPlayCount"]), inline=False)
+    return embed
 
-async def UpdateList():
-    """Syncs the HMDs list with the one in the beatleader github """
-    global HMDs
-    session = aiohttp.ClientSession()
-    while True:
-        logging.info("Actualizando HMDs")
-        logging.info(f"Antes de: {len(HMDs.keys())}")
-        try:
-            DataExpresion = re.compile(r"([0-9]*): {\s*name: '(.*)'") #El codigo de BeatLeader para los HMDs esta en un formato en el cual no encontre una forma de parsear, por lo que en la posicion 1 que da el id del headset y en la posicion 2 su nombre, 0 es toda la expresion
-            TempHMDs = {}
-            async with session as ses:
-                async with ses.get("https://raw.githubusercontent.com/BeatLeader/beatleader-website/refs/heads/master/src/utils/beatleader/format.js") as request:
-                    data = await request.text()
-            headsets = DataExpresion.finditer(data)
-            for headset in headsets:
-                TempHMDs[headset[1]] = headset[2]
-            HMDs = TempHMDs
-        except Exception as e:
-            logging.error(e)
-        await session.close()
-        logging.info(f"Despues de: {len(HMDs.keys())}")
-        await asyncio.sleep(10000)
+def ErrorWithFieldsEmbed(title:str, fields:list):
+    embed = discord.Embed(title=title, color=discord.Color.red())
+    for field in fields:
+        embed.add_field(name=field["name"], value=field["value"])
+    return embed
+
+def ErrorEmbed(title:str):
+    embed = discord.Embed(title=title, color=discord.Color.red())
+    return embed
+
+def SuccessEmbed(title:str):
+    embed = discord.Embed(title=title, color=discord.Color.green())
+    return embed
+
+def OvercomeEmbed(OvercomedName:str, OvercomedID:str, OvercomerName:str, OvercomerID:str, OvercomerPFP:str, DiffPoints:float):
+    buttons = Buttons()
+    embed = discord.Embed(title=GetString("OvercomeTitle", "Overcome").replace("{{name1}}", OvercomerName).replace("{{name2}}", OvercomedName), color=discord.Color.blurple())
+    embed.add_field(name=GetString("OvercomeDescription", "Overcome").replace("{{var}}", str(int(DiffPoints))), value=" ")
+    embed.set_thumbnail(url=OvercomerPFP)
+    buttons.AddButton(OvercomedName, "https://scoresaber.com/u/" + OvercomedID)
+    buttons.AddButton(OvercomerName, "https://scoresaber.com/u/" + OvercomerID)
+    return embed, buttons
+
+def ChallengeEmbed(datos:dict, challenge:str, points:str, playerid:str, values:list):
+    if "Scoresaber" in datos.keys() and "Beatleader" in datos.keys():
+        playername = datos['commandData']['score']['leaderboardPlayerInfo'].get('name')
+        pfp = datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"]
+    if "Beatleader" in datos.keys() and not "Scoresaber" in datos.keys():
+        playername = datos["player"].get("name")
+        pfp = datos["player"]["avatar"]
+    if "Scoresaber" in datos.keys() and not "Beatleader" in datos.keys():
+        playername = datos['commandData']['score']['leaderboardPlayerInfo']['name']
+        pfp = datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"]
+
+    embed = discord.Embed(title=GetString("UserCompletedChallenge", "Challenges").replace("{{name}}", playername))
+    embed.add_field(name=GetString("Category", "Challenges"), value=challenge.title(), inline=False)
+    embed.add_field(name=GetString("OvercomeValue", "Challenges"), value=points, inline=False)
+    embed.add_field(name=GetString("ObtainedValue", "Challenges"), value=values[1], inline=False)
+    embed.set_thumbnail(url=pfp)
+    return embed
 
 
-async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
-    """Esta funcion solo genera el embed, se encarga principalmente de bindear los datos necesarios a variables
-    Y es casi insostenible, para generar al final solo un embed que requiere de unas 20 lineas de codigo .-."""
-    buttons = classes.Buttons()
+async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
+    buttons = Buttons()
     if "Scoresaber" in datos.keys() and "Beatleader" in datos.keys():
         try:
             color = discord.Color.dark_orange()
@@ -51,9 +71,9 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
             puntajemod = datos["commandData"]["score"]["modifiedScore"]
             puntajebase = datos["commandData"]["score"]["baseScore"]
             hmd = HMDs[str(datos["hmd"])]
-            pp = max([datos["commandData"]["score"]["pp"], datos["contextExtensions"][0]["pp"]])
+            pp = datos["commandData"]["score"]["pp"], datos["contextExtensions"][0]["pp"]
             estrellas = round(max([datos["commandData"]["leaderboard"]["stars"], datos["leaderboard"]["difficulty"]["stars"] or 0]), 2)
-            weight = max(datos["commandData"]["score"]["weight"], datos["contextExtensions"][0]["weight"])
+            weight = datos["commandData"]["score"]["weight"], datos["contextExtensions"][0]["weight"]
             puntajemaximo = datos["commandData"]["leaderboard"]["maxScore"]
             hashcancion = datos["commandData"]["leaderboard"].get("songHash")
             dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
@@ -115,26 +135,19 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
             buttons.AddButton(playername, f"https://scoresaber.com/u/{playerid}")
         except Exception as e:
             logging.error(f"Ocurrio un error {e} Al momento de asignar las variables de ScoreSaber para el jugador {playername}")
-    values = [False, 0]
-
-    challenge = DataBaseManager.GetChallenge(playerid)
-    if challenge[0]:
-        challenge, points, _ = challenge
-        values = challenges.CheckChallenge(playerid, pp, estrellas, puntajemod)
-        if values[0] == True:
-            retoembed = discord.Embed(title=GetString("UserCompletedChallenge", "Challenges").replace("{{name}}", playername))
-            retoembed.add_field(name=GetString("Category", "Challenges"), value=challenge.title(), inline=False)
-            retoembed.add_field(name=GetString("OvercomeValue", "Challenges"), value=points, inline=False)
-            retoembed.add_field(name=GetString("ObtainedValue", "Challenges"), value=values[1], inline=False)
-            retoembed.set_thumbnail(url=pfp)
-            DataBaseManager.CompleteChallenge(playerid)
 
     embed = discord.Embed(title=GetString("EmbedTitle", "ScoreEmbed").replace("{{name}}", playername), color=color)
     embed.add_field(name=GetString("ToPass", "ScoreEmbed").replace("{{song}}", nombrecancion),value=" ",inline=False)
     embed.set_thumbnail(url=pfp)
     embed.set_image(url=imagenalbum)
     embed.add_field(name=GetString("Score", "ScoreEmbed"),value='{:20,.0f}'.format(puntajemod),inline=False)
-    embed.add_field(name=GetString("AddedPerformancePoints", "ScoreEmbed"),value=str(int(pp * weight)),inline=True)
+
+    if plataforma == "ScoreSaber" or plataforma == "Beatleader":
+        embed.add_field(name=GetString("AddedPerformancePoints", "ScoreEmbed"),value=str(round(float(pp * weight),2)),inline=True)
+    else:
+        embed.add_field(name=GetString("AddedPerformancePointsBeatLeader", "ScoreEmbed"),value=str(round(float(pp[0] * weight[0]), 2)),inline=True)
+        embed.add_field(name=GetString("AddedPerformancePointsScoreSaber", "ScoreEmbed"),value=str(round(float(pp[1] * weight[1]), 2)),inline=True)
+
     if puntajemaximo != 0:
         embed.add_field(name=GetString("Average", "ScoreEmbed"), value=str(round((puntajebase / puntajemaximo) * 100, 2)) + "%")
         embed.add_field(name=GetString("Stars", "ScoreEmbed"), value=str(estrellas))
@@ -155,20 +168,4 @@ async def PostEmbed(*, datos:dict, client: discord.Client, gamestill:int):
         if not "error" in cancion.keys():
             buttons.AddButton(GetString("DownloadSong", "ScoreEmbed"), f"https://beatsaver.com/maps/{cancion['codigo']}")
         embed.set_footer(text=GetString("LastGameBefore", "ScoreEmbed").replace("{{var}}", str(gamestill)))
-
-        for guild in DataBaseManager.GetChannels(1):
-            try:
-                channel = client.get_channel(int(guild[0]))
-                await channel.send(embed=embed, view=buttons)
-            except Exception as e:
-                print(e)
-                DataBaseManager.RemoveChannel(guild[0])
-                
-        for guild in DataBaseManager.GetChannels(0):
-            if values[0] == True:
-                try:
-                    channel = client.get_channel(int(guild[0]))
-                    await channel.send(embed=retoembed)
-                except Exception as e:
-                    print(e)
-                    DataBaseManager.RemoveChannel(guild[0])
+    return embed, buttons

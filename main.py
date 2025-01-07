@@ -7,7 +7,7 @@ import scoresaber
 import beatleader
 import challenges
 import playerhandler
-import scoreembed
+import EmbedPoster
 import logging
 import DataBaseManager
 
@@ -76,6 +76,13 @@ async def setChallengeChannel(interaction: discord.Interaction):
     embed = discord.Embed(title="El canal se ha establecido exitosamente para los scores :)", color=discord.Color.green())
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
+@tree.command(name="establecer_canal_feed", description="Establece el canal del feed de jugadores en el servidor.")
+@has_permissions(administrator=True)
+async def setChallengeChannel(interaction: discord.Interaction):
+    DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=2)
+    embed = discord.Embed(title="El canal se ha establecido exitosamente para el feed de los jugadores :)", color=discord.Color.green())
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
 @tree.command(name="eliminar_canal", description="Bye Bye SPAM")
 @has_permissions(administrator=True)
 async def setChallengeChannel(interaction: discord.Interaction):
@@ -93,5 +100,5 @@ async def on_ready():
 
     client.loop.create_task(beatleader.Recieve(client))
     client.loop.create_task(scoresaber.Recieve(client))
-    client.loop.create_task(scoreembed.UpdateList())
+    client.loop.create_task(EmbedPoster.UpdateList())
 client.run(os.getenv("token"))
