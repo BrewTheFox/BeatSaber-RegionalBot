@@ -48,7 +48,7 @@ class db():
         data = self.curr.fetchone()
         if data is None:
             return False
-        self.curr.execute("UPDATE players SET challenge = ?, points = ?, difficulty = ? WHERE discord=?;", (type, points, difficulty))
+        self.curr.execute("UPDATE players SET challenge = ?, points = ?, difficulty = ? WHERE discord=?;", (type, points, difficulty, discord))
         self.conn.commit()
     
     def GetChallenge(self, id:str) -> list | bool:

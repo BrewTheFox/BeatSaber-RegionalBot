@@ -27,7 +27,7 @@ def generatechallenge(uid:int, dificultad:str):
         return embed
     
     kind = random.choice(retos)
-    if dificultad == "Easy":
+    if dificultad == "Facil":
         if kind == "score":
             score = random.randint(150, 600) * 1000
             DataBaseManager.SetChallenge(str(uid), "Easy", "score", score)
@@ -42,7 +42,7 @@ def generatechallenge(uid:int, dificultad:str):
             embed = discord.Embed(title=f"¡Pasate un nivel con mas de {quantity} PP!", color=discord.Color.blue())
         return embed
     
-    if dificultad == "Hard":
+    if dificultad == "Dificil":
         if kind == "score":
             score = random.randint(600, 1200) * 1000
             DataBaseManager.SetChallenge(str(uid), "Hard", "score", score)
