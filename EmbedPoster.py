@@ -7,8 +7,21 @@ import DataBaseManager
 import challenges
 from Embeds import ScoreEmbed, ChallengeEmbed, OvercomeEmbed
 import scoresaber
+import beatleader
 
 HMDs = {"256": "Quest 2",    "512": "Quest 3",    "64": "Valve Index",    "513": "Quest 3S",    "1": "Rift CV1",    "2": "Vive",    "60": "Pico 4",    "61": "Quest Pro",    "70": "PS VR2",    "8": "Windows Mixed Reality",    "16": "Rift S",    "65": "Controllable",    "32": "Quest",    "4": "Vive Pro",    "35": "Vive Pro 2",    "128": "Vive Cosmos",    "36": "Vive Elite",    "47": "Vive Focus",    "38": "Pimax 8K",    "39": "Pimax 5K",    "40": "Pimax Artisan",    "33": "Pico Neo 3",    "34": "Pico Neo 2",    "41": "HP Reverb",    "42": "Samsung WMR",    "43": "Qiyu Dream",    "45": "Lenovo Explorer",    "46": "Acer WMR",    "66": "Bigscreen Beyond",    "67": "NOLO Sonic",    "68": "Hypereal",    "48": "Arpara",    "49": "Dell Visor",    "71": "MeganeX VG1",    "55": "Huawei VR",    "56": "Asus WMR",    "51": "Vive DVT",    "52": "glasses20",    "53": "Varjo",    "69": "Varjo Aero",    "54": "Vaporeon",    "57": "Cloud XR",    "58": "VRidge",    "50": "e3",    "59": "Medion Eraser",    "37": "Miramar",    "0": "Unknown headset",    "44": "Disco"}
+
+async def SendOvercomeEmbed(overcameplayer:list, client:discord.Client, playername:str, playerid:str, pfp:str, platform:str):
+    if overcameplayer[0]:
+        Oembed, Obuttons = OvercomeEmbed(overcameplayer[1], overcameplayer[2], playername, playerid, pfp, overcameplayer[3], overcameplayer[4], platform)
+        for guild in DataBaseManager.GetChannels(2):
+            try:
+                channel = client.get_channel(int(guild[0]))
+                await channel.send(embed=Oembed, view=Obuttons)
+            except Exception as e:
+                print(e)
+                DataBaseManager.RemoveChannel(guild[0])
+
 
 async def UpdateList():
     """Syncs the HMDs list with the one in the beatleader github """
@@ -41,8 +54,11 @@ async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
         playername = datos["player"].get("name")
         puntajemod = datos["contextExtensions"][0]["modifiedScore"]
         pp = datos["contextExtensions"][0]["pp"]
+        pfp = datos["player"]["avatar"]
         estrellas = round(datos["leaderboard"]["difficulty"].get("stars") or 0, 2)
-        overcameplayer = [False, None, 0, 0]
+        weight = datos["contextExtensions"][0]["weight"]
+        overcameplayer = await beatleader.GetPlayerPassedOther(pp * weight, str(playerid))
+        await SendOvercomeEmbed(overcameplayer, client, playername, playerid, pfp, "Beatleader")
     if "Scoresaber" in datos.keys():
         playerid = str(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"])
         playername = datos['commandData']['score']['leaderboardPlayerInfo'].get('name')
@@ -52,6 +68,7 @@ async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
         weight = datos["commandData"]["score"]["weight"]
         overcameplayer = await scoresaber.GetPlayerPassedOther(pp * weight, str(playerid))
         pfp = datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"]
+        await SendOvercomeEmbed(overcameplayer, client, playername, playerid, pfp, "Scoresaber")
 
     challenge = DataBaseManager.GetChallenge(playerid)
     if challenge[0]:
@@ -59,15 +76,6 @@ async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
         retoembed = ChallengeEmbed(datos, challenge[0], challenge[1], playerid, values)
     
     embed, buttons = await ScoreEmbed(datos, HMDs, gamestill)
-    if overcameplayer[0]:
-        Oembed, Obuttons = OvercomeEmbed(overcameplayer[1], overcameplayer[2], playername, playerid, pfp, overcameplayer[3] )
-        for guild in DataBaseManager.GetChannels(2):
-            try:
-                channel = client.get_channel(int(guild[0]))
-                await channel.send(embed=Oembed, view=Obuttons)
-            except Exception as e:
-                print(e)
-                DataBaseManager.RemoveChannel(guild[0])
 
     for guild in DataBaseManager.GetChannels(1):
         try:

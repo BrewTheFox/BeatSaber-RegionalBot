@@ -22,7 +22,6 @@ async def GetPlayerInfo(did:int) -> list:
                 await session.close()
         embed = PlayerEmbed(discord.Color.yellow, data)
         return embed, False
-    
     embed = ErrorWithFieldsEmbed(GetString("AskUserToLink", "Misc"), [{"name":GetString("NoLinkedAccountUser", "Misc"), "value":" "}])
     return embed, True
 
@@ -47,11 +46,11 @@ async def GetPlayerPassedOther(addedPP:int, PlayerID:str):
         try:
             PPAdversarial = data["players"][0]["pp"]
         except:
-            return [False, None, 0, 0]
-    if PPAdversarial < PPBefore:
-        return [False, None, 0, 0]
-    return [True, data["players"][Specific + 1]["name"], data["players"][Specific + 1]["id"], PPAdversarial - PPBefore]
-
+            return [False, None, 0, 0, "0"]
+    if PPAdversarial < PPBefore or playerinfo["country"] != COUNTRY:
+        return [False, None, 0, 0, "0"]
+    logging.info(f"El usuario {PlayerID} supero al usuario {data["players"][Specific + 1]["id"]}")
+    return [True, data["players"][Specific + 1]["name"], data["players"][Specific + 1]["id"], PPAdversarial - PPBefore, str(CurrentRank)]
 
 async def Recieve(client:discord.Client):
     while True:

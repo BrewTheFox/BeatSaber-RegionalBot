@@ -85,7 +85,7 @@
         },
         "Overcome": {
             "OvercomeTitle":"!**{{name1}}** Logro superar a **{{name2}}** en el leaderboard!",
-            "OvercomeDescription":"¡Con tan solo {{var}} puntos de diferencia!"
+            "OvercomeDescription":"¡Con tan solo {{var1}} puntos de diferencia, Por lo que ahora su posicion en {{leaderboard}} es **#{{var2}}**!"
         }
     }
 }

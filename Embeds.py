@@ -29,13 +29,19 @@ def SuccessEmbed(title:str):
     embed = discord.Embed(title=title, color=discord.Color.green())
     return embed
 
-def OvercomeEmbed(OvercomedName:str, OvercomedID:str, OvercomerName:str, OvercomerID:str, OvercomerPFP:str, DiffPoints:float):
+def OvercomeEmbed(OvercomedName:str, OvercomedID:str, OvercomerName:str, OvercomerID:str, OvercomerPFP:str, DiffPoints:float, leaderboardposition:str, platform:str):
     buttons = Buttons()
     embed = discord.Embed(title=GetString("OvercomeTitle", "Overcome").replace("{{name1}}", OvercomerName).replace("{{name2}}", OvercomedName), color=discord.Color.blurple())
-    embed.add_field(name=GetString("OvercomeDescription", "Overcome").replace("{{var}}", str(int(DiffPoints))), value=" ")
+    DiffPoints = f'{int(DiffPoints):,}'
+    leaderboardposition = f'{int(leaderboardposition):,}'
+    embed.add_field(name=GetString("OvercomeDescription", "Overcome").replace("{{var1}}", DiffPoints).replace("{{var2}}", leaderboardposition).replace("{{leaderboard}}", platform), value=" ")
     embed.set_thumbnail(url=OvercomerPFP)
-    buttons.AddButton(OvercomedName, "https://scoresaber.com/u/" + OvercomedID)
-    buttons.AddButton(OvercomerName, "https://scoresaber.com/u/" + OvercomerID)
+    if platform == "Scoresaber":
+        buttons.AddButton(OvercomedName, "https://scoresaber.com/u/" + OvercomedID)
+        buttons.AddButton(OvercomerName, "https://scoresaber.com/u/" + OvercomerID)
+    else:
+        buttons.AddButton(OvercomedName, "https://beatleader.com/u/" + OvercomedID)
+        buttons.AddButton(OvercomerName, "https://beatleader.com/u/" + OvercomerID)
     return embed, buttons
 
 def ChallengeEmbed(datos:dict, challenge:str, points:str, playerid:str, values:list):
@@ -61,6 +67,7 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
     buttons = Buttons()
     if "Scoresaber" in datos.keys() and "Beatleader" in datos.keys():
         try:
+            plataforma = "ScoreSaber y Beatleader"
             color = discord.Color.dark_orange()
             playername = datos['commandData']['score']['leaderboardPlayerInfo'].get('name')
             logging.debug(f"Variables multiples asignadas para el usuario {playername}")
@@ -79,7 +86,6 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
             fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
             replay = datos["replay"]
-            plataforma = "ScoreSaber y Beatleader"
             buttons.AddButton(f"{playername} Beatleader", f"https://beatleader.com/u/{playerid}")
             buttons.AddButton(f"{playername} Scoresaber", f"https://scoresaber.com/u/{playerid}")
             cancion = await beatsaver.songinfo(hashcancion, dificultad)
@@ -87,6 +93,7 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             logging.error(f"Ocurrio un {e} Al momento de asignar las variables multiples para el jugador {playername}")
     if "Beatleader" in datos.keys() and not "Scoresaber" in datos.keys():
         try:
+            plataforma = "Beatleader"
             color = discord.Color.dark_purple()
             playername = datos["player"].get("name")
             logging.debug(f"Variables Beatleader asignadas para el usuario {playername}")
@@ -106,13 +113,13 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             puntajemaximo = datos["leaderboard"]["difficulty"]["maxScore"]
             fallos = - int(datos["scoreImprovement"]["badCuts"] + datos["scoreImprovement"]["missedNotes"])
             replay = datos["replay"]
-            plataforma = "Beatleader"
             cancion = await beatsaver.songinfo(hashcancion, f"_{dificultad}_{modo}")
             buttons.AddButton(playername, f"https://beatleader.com/u/{playerid}")
         except Exception as e:
             logging.error(f"Ocurrio un {e} Al momento de asignar las variables de BeatLeader para el jugador {playername}")
     if "Scoresaber" in datos.keys() and not "Beatleader" in datos.keys():
         try:
+            plataforma = "ScoreSaber"
             color = discord.Color.gold()
             playername = datos['commandData']['score']['leaderboardPlayerInfo']['name']
             logging.debug(f"Variables ScoreSaber asignadas para el usuario {playername}")
@@ -130,7 +137,6 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             hashcancion = datos["commandData"]["leaderboard"]["songHash"]
             dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
             fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
-            plataforma = "ScoreSaber"
             cancion = await beatsaver.songinfo(hashcancion, dificultad)
             buttons.AddButton(playername, f"https://scoresaber.com/u/{playerid}")
         except Exception as e:
