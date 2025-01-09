@@ -151,8 +151,8 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
     if plataforma == "ScoreSaber" or plataforma == "Beatleader":
         embed.add_field(name=GetString("AddedPerformancePoints", "ScoreEmbed"),value=str(round(float(pp * weight),2)),inline=True)
     else:
-        embed.add_field(name=GetString("AddedPerformancePointsBeatLeader", "ScoreEmbed"),value=str(round(float(pp[0] * weight[0]), 2)),inline=True)
-        embed.add_field(name=GetString("AddedPerformancePointsScoreSaber", "ScoreEmbed"),value=str(round(float(pp[1] * weight[1]), 2)),inline=True)
+        embed.add_field(name=GetString("AddedPerformancePointsBeatLeader", "ScoreEmbed"),value=str(round(float(pp[1] * weight[1]), 2)),inline=True)
+        embed.add_field(name=GetString("AddedPerformancePointsScoreSaber", "ScoreEmbed"),value=str(round(float(pp[0] * weight[0]), 2)),inline=True)
 
     if puntajemaximo != 0:
         embed.add_field(name=GetString("Average", "ScoreEmbed"), value=str(round((puntajebase / puntajemaximo) * 100, 2)) + "%")
