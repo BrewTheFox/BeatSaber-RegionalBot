@@ -136,6 +136,7 @@ async def Unlink(uid:int):
                 datos = json.loads(await request.text())
         embed = SuccessEmbed(title=GetString("SuccessUnlink", "UserHandling").replace("{{name}}", datos['name']))
         embed.set_thumbnail(url=datos["profilePicture"])
+        DataBaseManager.RemovePlayer(uid)
     else:
         embed = ErrorEmbed(GetString("NoAccountToUnlink", "UserHandling"))
     return embed

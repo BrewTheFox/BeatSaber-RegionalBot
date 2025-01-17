@@ -37,6 +37,9 @@ def LoadPlayerDiscord(discord:str) -> Union[classes.player, bool]:
 def LoadPlayerID(id:str) -> Union[classes.player, bool]:
     return database.LoadPlayerID(id)
 
+def RemovePlayer(discord:str):
+    database.RemovePlayer(discord)
+
 def InsertPlayer(player:classes.player):
     database.InsertPlayer(player)
 

@@ -3,9 +3,9 @@ import classes
 from typing import Union
 
 class db():
-    def __init__(self):
+    def __init__(self, databasepath:str="./database.db"):
         """Initialize database"""
-        self.conn = sqlite3.connect("./database.db")
+        self.conn = sqlite3.connect(databasepath)
         self.curr = self.conn.cursor()
         self.curr.execute("CREATE TABLE IF NOT EXISTS 'players' ('id' varchar NOT NULL, 'discord' varchar NOT NULL, 'challenge' varchar NULL, 'points' int, 'difficulty' varchar NULL,'total_challenge_points' int NOT NULL);")
         self.curr.execute("CREATE TABLE IF NOT EXISTS 'servers' ('channel' varchar NULL, 'channel_type' int(1) NOT NULL);")
@@ -39,7 +39,7 @@ class db():
     
     def InsertPlayer(self, player:classes.player):
         """Inserts the player into the Database"""
-        self.curr.execute("INSERT INTO players (discord, id, total_challenge_points) VALUES (?, ?, ?);", (player.discord, player.id, player.total_points))
+        self.curr.execute("INSERT INTO players (discord, id, total_challenge_points, points) VALUES (?, ?, ?, ?);", (player.discord, player.id, player.total_points, player.points))
         self.conn.commit()
     
     def SetChallenge(self, discord:str, difficulty:str, type:str, points:int) -> bool:
@@ -67,7 +67,12 @@ class db():
         if data is None:
             return [None, None, None]
         return data[0], data[1], data[2]   
-    
+
+    def RemovePlayer(self, discord:str):
+        """Deletes a player from the database"""
+        self.curr.execute("DELETE FROM players WHERE discord=?;", (discord, ))
+        self.conn.commit()
+
     def CompleteChallenge(self, id:str, points:int):
         """Completes the challenge of a user"""
         self.curr.execute("UPDATE players SET total_challenge_points = total_challenge_points + ?, points=NULL, difficulty=NULL, challenge=NULL WHERE id = ?;", (points, id))
