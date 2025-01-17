@@ -101,7 +101,6 @@ async def Link(link:str, uid:int):
             async with ses.get(url) as request:
                 response = await request.text()
                 status = request.status
-                await session.close()
 
         if not '"errorMessage"' in response or status == 404:
             datos = json.loads(response)

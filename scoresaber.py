@@ -19,8 +19,7 @@ async def GetPlayerInfo(did:int) -> list:
         async with session as ses:
             async with ses.get(f"https://scoresaber.com/api/player/{player.id}/full") as request:
                 data = json.loads(await request.text())
-                await session.close()
-        embed = PlayerEmbed(discord.Color.yellow, data)
+        embed = PlayerEmbed(discord.Color.yellow(), data)
         return embed, False
     embed = ErrorWithFieldsEmbed(GetString("AskUserToLink", "Misc"), [{"name":GetString("NoLinkedAccountUser", "Misc"), "value":" "}])
     return embed, True
@@ -31,7 +30,7 @@ async def GetPlayerPassedOther(addedPP:int, PlayerID:str):
             playerinfo = json.loads(await request.text())
     CurrentRank = playerinfo["countryRank"]
     Page = int(ceil(CurrentRank / 50))
-    Specific = CurrentRank - (Page - 1) * 50 - 1
+    Specific = CurrentRank - (Page - 1) * 49
 
     async with aiohttp.ClientSession() as ses:
         async with ses.get(f"https://scoresaber.com/api/players?countries={COUNTRY}&page={Page}") as request:

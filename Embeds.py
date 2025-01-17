@@ -5,8 +5,8 @@ from classes import Buttons
 import beatsaver
 
 def PlayerEmbed(color:discord.Colour, data:dict) -> discord.Embed:
-    embed = discord.Embed(title=GetConfiguration["strings"]["ProfileRequest"]["ProfileOf"].replace("{{name}}", data["name"]), color=color)
-    embed.set_thumbnail(url=data['avatar'])
+    embed = discord.Embed(title=GetConfiguration()["Strings"]["ProfileRequest"]["ProfileOf"].replace("{{name}}", data["name"]), color=color)
+    embed.set_thumbnail(url=data.get('avatar') or data.get('profilePicture'))
     embed.add_field(name="🌎", value=f"#{data['rank']}", inline=True)
     code_points = [127397 + ord(char) for char in data['country'].upper()]
     embed.add_field(name=''.join(chr(code) for code in code_points), value=f'#{data["countryRank"]}', inline=True)

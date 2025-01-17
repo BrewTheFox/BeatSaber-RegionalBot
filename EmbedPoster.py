@@ -42,7 +42,6 @@ async def UpdateList():
             HMDs = TempHMDs
         except Exception as e:
             logging.error(e)
-        await session.close()
         logging.info(f"Despues de: {len(HMDs.keys())}")
         await asyncio.sleep(10000)
 

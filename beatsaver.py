@@ -6,7 +6,6 @@ async def songinfo(hash:str, dificulty:str) -> dict:
     async with session as ses:
         async with ses.get(f"https://api.beatsaver.com/maps/hash/{hash}") as request:
             datos = json.loads(await request.text())
-            await session.close()
     try:
         if not "error" in datos.keys():
             dificultad = dificulty.strip("_").split("_")
