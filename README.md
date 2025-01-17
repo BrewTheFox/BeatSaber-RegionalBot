@@ -2,7 +2,7 @@
 
 ## Descripción del Proyecto
 
-Este bot de Discord está diseñado para mejorar la experiencia de la comunidad de Beat Saber, especialmente para jugadores de una región específica (en tu caso, `CO`). Se integra con las APIs de ScoreSaber y BeatLeader para proporcionar información en tiempo real y fomentar la competencia amistosa. El bot ofrece una variedad de funcionalidades que mantienen a los jugadores conectados y motivados.
+Este bot de Discord está diseñado para mejorar la experiencia de la comunidad de Beat Saber, especialmente para jugadores de una región específica (en mi caso, `CO`). Se integra con las APIs de ScoreSaber y BeatLeader para proporcionar información en tiempo real y fomentar la competencia amistosa. El bot ofrece una variedad de funcionalidades que mantienen a los jugadores conectados y motivados.
 
 ## Características Principales
 
@@ -58,7 +58,7 @@ Este bot de Discord está diseñado para mejorar la experiencia de la comunidad 
     ```
 
 2.  **Configura el Entorno:**
-    *   Crea un archivo `.env` y agrega tu token de Discord:
+    *   En el archivo `.env` agrega tu token de Discord:
         ```env
         token=TU_TOKEN_DE_DISCORD
         ```
