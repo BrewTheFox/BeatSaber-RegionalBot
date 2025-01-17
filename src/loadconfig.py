@@ -1,6 +1,6 @@
 import json
 
-with open("./config.json", "r") as config:
+with open(".././config.json", "r") as config:
     configuration = json.loads(config.read())
 
 def GetConfiguration() -> dict:

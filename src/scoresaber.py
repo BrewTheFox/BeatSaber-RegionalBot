@@ -2,10 +2,10 @@ import aiohttp
 import discord
 import json
 import websockets
-import playerhandler
+import playerhandler as playerhandler
 import asyncio
 import logging
-import DataBaseManager
+import DataBaseManager as DataBaseManager
 from Embeds import PlayerEmbed, ErrorWithFieldsEmbed
 from loadconfig import GetString, GetConfiguration
 from math import ceil

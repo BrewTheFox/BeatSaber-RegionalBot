@@ -3,17 +3,17 @@ from discord.ext.commands import has_permissions
 from typing import Literal
 from dotenv import load_dotenv
 import os
-import scoresaber
-import beatleader
-import challenges
-import playerhandler
-import EmbedPoster
+import scoresaber as scoresaber
+import beatleader as beatleader
+import challenges as challenges
+import playerhandler as playerhandler
+import EmbedPoster as EmbedPoster
 import logging
-import DataBaseManager
+import DataBaseManager as DataBaseManager
 
-logging.basicConfig(filename='logs.log', encoding='utf-8', level=logging.INFO)
+logging.basicConfig(filename='../logs.log', encoding='utf-8', level=logging.INFO)
 
-load_dotenv("./config.env")
+load_dotenv(".././config.env")
 intents = discord.Intents.all()
 intents.message_content = True
 client = discord.Client(intents=intents)

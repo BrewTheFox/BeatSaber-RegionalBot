@@ -1,6 +1,6 @@
-import DataBaseManager
-import DataBaseConn
-import challenges
+import DataBaseManager as DataBaseManager
+import DataBaseConn as DataBaseConn
+import challenges as challenges
 from loadconfig import GetString, GetConfiguration
 from classes import player
 from Embeds import PlayerEmbed

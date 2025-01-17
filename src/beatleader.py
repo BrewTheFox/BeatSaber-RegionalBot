@@ -1,11 +1,11 @@
 import websockets
-import playerhandler
+import playerhandler as playerhandler
 import json
 import aiohttp
 import discord
 import asyncio
 import logging
-import DataBaseManager
+import DataBaseManager as DataBaseManager
 from loadconfig import GetString, GetConfiguration
 from Embeds import PlayerEmbed, ErrorWithFieldsEmbed
 from math import ceil

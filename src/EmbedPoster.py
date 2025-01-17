@@ -3,11 +3,11 @@ import aiohttp
 import asyncio
 import re
 import logging
-import DataBaseManager
-import challenges
+import DataBaseManager as DataBaseManager
+import challenges as challenges
 from Embeds import ScoreEmbed, ChallengeEmbed, OvercomeEmbed
-import scoresaber
-import beatleader
+import scoresaber as scoresaber
+import beatleader as beatleader
 
 HMDs = {"256": "Quest 2",    "512": "Quest 3",    "64": "Valve Index",    "513": "Quest 3S",    "1": "Rift CV1",    "2": "Vive",    "60": "Pico 4",    "61": "Quest Pro",    "70": "PS VR2",    "8": "Windows Mixed Reality",    "16": "Rift S",    "65": "Controllable",    "32": "Quest",    "4": "Vive Pro",    "35": "Vive Pro 2",    "128": "Vive Cosmos",    "36": "Vive Elite",    "47": "Vive Focus",    "38": "Pimax 8K",    "39": "Pimax 5K",    "40": "Pimax Artisan",    "33": "Pico Neo 3",    "34": "Pico Neo 2",    "41": "HP Reverb",    "42": "Samsung WMR",    "43": "Qiyu Dream",    "45": "Lenovo Explorer",    "46": "Acer WMR",    "66": "Bigscreen Beyond",    "67": "NOLO Sonic",    "68": "Hypereal",    "48": "Arpara",    "49": "Dell Visor",    "71": "MeganeX VG1",    "55": "Huawei VR",    "56": "Asus WMR",    "51": "Vive DVT",    "52": "glasses20",    "53": "Varjo",    "69": "Varjo Aero",    "54": "Vaporeon",    "57": "Cloud XR",    "58": "VRidge",    "50": "e3",    "59": "Medion Eraser",    "37": "Miramar",    "0": "Unknown headset",    "44": "Disco"}
 

@@ -1,9 +1,9 @@
 import sqlite3
-import classes
+import classes as classes
 from typing import Union
 
 class db():
-    def __init__(self, databasepath:str="./database.db"):
+    def __init__(self, databasepath:str=".././database.db"):
         """Initialize database"""
         self.conn = sqlite3.connect(databasepath)
         self.curr = self.conn.cursor()

@@ -1,5 +1,5 @@
-import DataBaseConn
-import classes
+import DataBaseConn as DataBaseConn
+import classes as classes
 from typing import Union
 
 database = DataBaseConn.db()

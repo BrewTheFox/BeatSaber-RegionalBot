@@ -1,13 +1,13 @@
 import discord
 import time
-import EmbedPoster
+import EmbedPoster as EmbedPoster
 import aiohttp
 import json
 import re
 import asyncio
 import logging
-import classes
-import DataBaseManager
+import classes as classes
+import DataBaseManager as DataBaseManager
 from Embeds import ErrorEmbed, SuccessEmbed
 from loadconfig import GetString
 

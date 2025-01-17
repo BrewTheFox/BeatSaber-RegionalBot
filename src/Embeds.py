@@ -2,7 +2,7 @@ import discord
 from loadconfig import GetString, GetConfiguration
 import logging
 from classes import Buttons
-import beatsaver
+import beatsaver as beatsaver
 
 def PlayerEmbed(color:discord.Colour, data:dict) -> discord.Embed:
     embed = discord.Embed(title=GetConfiguration()["Strings"]["ProfileRequest"]["ProfileOf"].replace("{{name}}", data["name"]), color=color)

@@ -1,6 +1,6 @@
 import discord
 import random
-import DataBaseManager
+import DataBaseManager as DataBaseManager
 from Embeds import ErrorEmbed
 from loadconfig import GetString, GetConfiguration
 
