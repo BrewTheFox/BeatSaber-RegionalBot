@@ -65,30 +65,40 @@ async def link(interaction: discord.Interaction, link:str):
 @tree.command(name="establecer_canal_retos", description="Establece el canal de retos en el servidor.")
 @has_permissions(administrator=True)
 async def setChallengeChannel(interaction: discord.Interaction):
-    DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=0)
-    embed = discord.Embed(title="El canal se ha establecido exitosamente para los retos :)", color=discord.Color.green())
-    await interaction.response.send_message(embed=embed, ephemeral=True)
-
+    if interaction.user.guild_permissions.administrator == True:
+        DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=0)
+        embed = discord.Embed(title="El canal se ha establecido exitosamente para los retos :)", color=discord.Color.green())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+    else:
+        embed = discord.Embed(title="No tienes permiso para esto", color=discord.Color.red())
 @tree.command(name="establecer_canal_scores", description="Establece el canal de scores en el servidor.")
 @has_permissions(administrator=True)
 async def setChallengeChannel(interaction: discord.Interaction):
-    DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=1)
-    embed = discord.Embed(title="El canal se ha establecido exitosamente para los scores :)", color=discord.Color.green())
-    await interaction.response.send_message(embed=embed, ephemeral=True)
-
+    if interaction.user.guild_permissions.administrator == True:
+        DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=1)
+        embed = discord.Embed(title="El canal se ha establecido exitosamente para los scores :)", color=discord.Color.green())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+    else:
+        embed = discord.Embed(title="No tienes permiso para esto", color=discord.Color.red())
 @tree.command(name="establecer_canal_feed", description="Establece el canal del feed de jugadores en el servidor.")
 @has_permissions(administrator=True)
 async def setChallengeChannel(interaction: discord.Interaction):
-    DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=2)
-    embed = discord.Embed(title="El canal se ha establecido exitosamente para el feed de los jugadores :)", color=discord.Color.green())
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    if interaction.user.guild_permissions.administrator == True:
+        DataBaseManager.SetChannel(str(interaction.channel.id), channel_type=2)
+        embed = discord.Embed(title="El canal se ha establecido exitosamente para el feed de los jugadores :)", color=discord.Color.green())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+    else:
+        embed = discord.Embed(title="No tienes permiso para esto", color=discord.Color.red())
 
 @tree.command(name="eliminar_canal", description="Bye Bye SPAM")
 @has_permissions(administrator=True)
 async def setChallengeChannel(interaction: discord.Interaction):
-    DataBaseManager.RemoveChannel(str(interaction.channel.id))
-    embed = discord.Embed(title="El canal se ha eliminado satisfactoriamente", color=discord.Color.red())
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    if interaction.user.guild_permissions.administrator == True:
+        DataBaseManager.RemoveChannel(str(interaction.channel.id))
+        embed = discord.Embed(title="El canal se ha eliminado satisfactoriamente", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+    else:
+        embed = discord.Embed(title="No tienes permiso para esto", color=discord.Color.red())
 
 @client.event
 async def on_ready():
