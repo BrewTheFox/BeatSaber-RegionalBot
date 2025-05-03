@@ -65,7 +65,11 @@
             "Platform":"Plataforma:",
             "ViewReplay":"Ver replay",
             "DownloadSong":"Descargar la cancion",
-            "LastGameBefore":"El anterior juego de alguien de tu pais fue hace {{var}} partidas."
+            "LastGameBefore":"El anterior juego de alguien de tu pais fue hace {{var}} partidas.",
+            "BeatLeaderEmoji":"<:beatleader:1326638016277516429>",
+            "ScoreSaberEmoji":"<:scoresaber:1326637802963734528>",
+            "ReplayEmoji":"<a:bspepe:1368253102880329808>",
+            "BeatSaverEmoji":"<:beatsaver:1326638178009874465>"
         },
 
         "UserHandling":{
