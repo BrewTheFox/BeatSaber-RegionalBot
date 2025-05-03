@@ -47,7 +47,6 @@ async def UpdateList():
 
 async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
     values = [False, 0]
-
     if "Beatleader" in datos.keys():
         playerid = str(datos["player"]["id"])
         playername = datos["player"].get("name")
@@ -70,24 +69,24 @@ async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
         await SendOvercomeEmbed(overcameplayer, client, playername, playerid, pfp, "Scoresaber")
 
     challenge = DataBaseManager.GetChallenge(playerid)
-    if challenge[0]:
+    if challenge[0]: #if the challenge was generated
         values = challenges.CheckChallenge(playerid, pp, estrellas, puntajemod)
-        retoembed = ChallengeEmbed(datos, challenge[0], challenge[1], playerid, values)
-    
-    embed, buttons = await ScoreEmbed(datos, HMDs, gamestill)
-
-    for guild in DataBaseManager.GetChannels(1):
-        try:
-            channel = client.get_channel(int(guild[0]))
-            await channel.send(embed=embed, view=buttons)
-        except Exception as e:
-            print(e)
-            DataBaseManager.RemoveChannel(guild[0])
-        for guild in DataBaseManager.GetChannels(0):
-            if values[0] == True:
+        if values[0]: #if the challenge was completed
+            retoembed = ChallengeEmbed(datos, challenge[0], challenge[1], playerid, values)
+            DataBaseManager.CompleteChallenge(playerid)
+            for guild in DataBaseManager.GetChannels(0): # Remember that 0 is for challenges, 1 is for scores and 2 for player feedback
                 try:
                     channel = client.get_channel(int(guild[0]))
                     await channel.send(embed=retoembed)
                 except Exception as e:
                     print(e)
                     DataBaseManager.RemoveChannel(guild[0])
+    
+    embed, buttons = await ScoreEmbed(datos, HMDs, gamestill)
+    for guild in DataBaseManager.GetChannels(1): # Remember that 0 is for challenges, 1 is for scores and 2 for player feedback
+        try:
+            channel = client.get_channel(int(guild[0]))
+            await channel.send(embed=embed, view=buttons)
+        except Exception as e:
+            print(e)
+            DataBaseManager.RemoveChannel(guild[0])
