@@ -37,11 +37,11 @@ def OvercomeEmbed(OvercomedName:str, OvercomedID:str, OvercomerName:str, Overcom
     embed.add_field(name=GetString("OvercomeDescription", "Overcome").replace("{{var1}}", DiffPoints).replace("{{var2}}", leaderboardposition).replace("{{leaderboard}}", platform), value=" ")
     embed.set_thumbnail(url=OvercomerPFP)
     if platform == "Scoresaber":
-        buttons.AddButton(OvercomedName, "https://scoresaber.com/u/" + OvercomedID, "<:scoresaber:1326637802963734528>")
-        buttons.AddButton(OvercomerName, "https://scoresaber.com/u/" + OvercomerID, "<:scoresaber:1326637802963734528>")
+        buttons.AddButton(OvercomedName, "https://scoresaber.com/u/" + OvercomedID, GetString("ScoreSaberEmoji", "ScoreEmbed"))
+        buttons.AddButton(OvercomerName, "https://scoresaber.com/u/" + OvercomerID, GetString("ScoreSaberEmoji", "ScoreEmbed"))
     else:
-        buttons.AddButton(OvercomedName, "https://beatleader.com/u/" + OvercomedID, "<:beatleader:1326638016277516429>")
-        buttons.AddButton(OvercomerName, "https://beatleader.com/u/" + OvercomerID, "<:beatleader:1326638016277516429>")
+        buttons.AddButton(OvercomedName, "https://beatleader.com/u/" + OvercomedID, GetString("BeatLeaderEmoji", "ScoreEmbed"))
+        buttons.AddButton(OvercomerName, "https://beatleader.com/u/" + OvercomerID, GetString("BeatLeaderEmoji", "ScoreEmbed"))
     return embed, buttons
 
 def ChallengeEmbed(datos:dict, challenge:str, points:str, playerid:str, values:list):
@@ -85,9 +85,9 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             hashcancion = datos["commandData"]["leaderboard"].get("songHash")
             dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
             fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
-            replay = datos["replay"]
-            buttons.AddButton(f"{playername} Beatleader", f"https://beatleader.com/u/{playerid}", "<:beatleader:1326638016277516429>")
-            buttons.AddButton(f"{playername} Scoresaber", f"https://scoresaber.com/u/{playerid}", "<:scoresaber:1326637802963734528>")
+            replay = "https://replay.beatleader.com/?scoreId=" + str(datos["id"])
+            buttons.AddButton(f"{playername} Beatleader", f"https://beatleader.com/u/{playerid}", GetString("BeatLeaderEmoji", "ScoreEmbed"))
+            buttons.AddButton(f"{playername} Scoresaber", f"https://scoresaber.com/u/{playerid}", GetString("ScoreSaberEmoji", "ScoreEmbed"))
             cancion = await beatsaver.songinfo(hashcancion, dificultad)
         except Exception as e:
             logging.error(f"Ocurrio un {e} Al momento de asignar las variables multiples para el jugador {playername}")
@@ -114,7 +114,7 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             fallos = - int(datos["scoreImprovement"]["badCuts"] + datos["scoreImprovement"]["missedNotes"])
             replay = "https://replay.beatleader.com/?scoreId=" + str(datos["id"])
             cancion = await beatsaver.songinfo(hashcancion, f"_{dificultad}_{modo}")
-            buttons.AddButton(playername, f"https://beatleader.com/u/{playerid}", "<:beatleader:1326638016277516429>")
+            buttons.AddButton(playername, f"https://beatleader.com/u/{playerid}", GetString("BeatLeaderEmoji", "ScoreEmbed"))
         except Exception as e:
             logging.error(f"Ocurrio un {e} Al momento de asignar las variables de BeatLeader para el jugador {playername}")
     if "Scoresaber" in datos.keys() and not "Beatleader" in datos.keys():
@@ -138,7 +138,7 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             dificultad = datos["commandData"]["leaderboard"]["difficulty"]["difficultyRaw"]
             fallos = int(datos["commandData"]["score"]["badCuts"]) + int(datos["commandData"]["score"]["missedNotes"])
             cancion = await beatsaver.songinfo(hashcancion, dificultad)
-            buttons.AddButton(playername, f"https://scoresaber.com/u/{playerid}", "<:scoresaber:1326637802963734528>")
+            buttons.AddButton(playername, f"https://scoresaber.com/u/{playerid}", GetString("ScoreSaberEmoji", "ScoreEmbed"))
         except Exception as e:
             logging.error(f"Ocurrio un error {e} Al momento de asignar las variables de ScoreSaber para el jugador {playername}")
 
@@ -172,6 +172,6 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             buttons.AddButton(GetString("ViewReplay", "ScoreEmbed"), replay, "<a:bspepe:1368253102880329808>")
 
         if not "error" in cancion.keys():
-            buttons.AddButton(GetString("DownloadSong", "ScoreEmbed"), f"https://beatsaver.com/maps/{cancion['codigo']}", "<:beatsaver:1326638178009874465>")
+            buttons.AddButton(GetString("DownloadSong", "ScoreEmbed"), f"https://beatsaver.com/maps/{cancion['codigo']}", GetString("BeatSaverEmoji", "ScoreEmbed"))
         embed.set_footer(text=GetString("LastGameBefore", "ScoreEmbed").replace("{{var}}", str(gamestill)))
     return embed, buttons
