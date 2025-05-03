@@ -12,6 +12,6 @@ class Buttons(discord.ui.View):
     def __init__(self):
         super().__init__()
 
-    def AddButton(self, text:str, link:str):
-        button = discord.ui.Button(label=text, url=link, style=discord.ButtonStyle.url)
+    def AddButton(self, text:str, link:str, emoji:str="<:scoresaber:1326637802963734528>"):
+        button = discord.ui.Button(label=text, url=link, style=discord.ButtonStyle.url, emoji=emoji)
         self.add_item(button)
