@@ -73,10 +73,3 @@ Este bot de Discord está diseñado para mejorar la experiencia de la comunidad 
     ```bash
     python src/main.py
     ```
-
-## Contacto
-
-Si tienes alguna pregunta o sugerencia, no dudes en contactarme.
-
----
-**Creado por Brew**
