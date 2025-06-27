@@ -111,7 +111,7 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             weight = datos["contextExtensions"][0]["weight"]
             estrellas = round(datos["leaderboard"]["difficulty"]["stars"] or 0, 2)
             puntajemaximo = datos["leaderboard"]["difficulty"]["maxScore"]
-            fallos = (abs(datos["scoreImprovement"]["badCuts"]) + abs(datos["scoreImprovement"]["missedNotes"]))
+            fallos = (abs(datos["badCuts"]) + abs(datos["missedNotes"]))
             replay = "https://replay.beatleader.com/?scoreId=" + str(datos["id"])
             cancion = await beatsaver.songinfo(hashcancion, f"_{dificultad}_{modo}")
             buttons.AddButton(playername, f"https://beatleader.com/u/{playerid}", GetString("BeatLeaderEmoji", "ScoreEmbed"))
