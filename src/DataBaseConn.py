@@ -7,6 +7,8 @@ class db():
         """Initialize database"""
         self.conn = sqlite3.connect(databasepath)
         self.curr = self.conn.cursor()
+        self.curr.execute("CREATE TABLE IF NOT EXISTS 'top_players_ss' ('id' varchar NOT NULL, 'performance_points' real NOT NULL);")
+        self.curr.execute("CREATE TABLE IF NOT EXISTS 'top_players_bl' ('id' varchar NOT NULL, 'performance_points' real NOT NULL);")
         self.curr.execute("CREATE TABLE IF NOT EXISTS 'players' ('id' varchar NOT NULL, 'discord' varchar NOT NULL, 'challenge' varchar NULL, 'points' int, 'difficulty' varchar NULL,'total_challenge_points' int NOT NULL);")
         self.curr.execute("CREATE TABLE IF NOT EXISTS 'servers' ('channel' varchar NULL, 'channel_type' int(1) NOT NULL);")
         self.conn.commit()
@@ -18,6 +20,36 @@ class db():
         if data is None:
             return False
         return classes.player(id=data[0], discord=data[1], challenge=data[2], points=data[3], total_points=data[4])
+    
+    def GetPlayerPP(self, platform:int, id:str) -> Union[tuple, None]:
+        """Returns the player's Performance Points based on the provided ID"""
+        platform = "top_players_ss" if platform == 0 else "top_players_bl"
+        self.curr.execute(f"SELECT performance_points FROM {platform} WHERE id=?;", (id,))
+        data = self.curr.fetchone()
+        return data
+    
+    def UpdatePlayerPerformancePoints(self, platform:int, id:str, pp:float) -> None:
+        """Updates the player's performance points using the provided ID"""
+        platform = "top_players_ss" if platform == 0 else "top_players_bl"
+        self.curr.execute(f"UPDATE {platform} SET performance_points=? WHERE id = ?;", (pp, id))
+        self.conn.commit()
+    
+    def InsertTopPlayer(self, platform:int, id:str, pp:float) -> None:
+        """Inserts a player into the top players table"""
+        platform = "top_players_ss" if platform == 0 else "top_players_bl"
+        self.curr.execute(f"SELECT performance_points FROM {platform} WHERE id=?;",(id, ))
+        data = self.curr.fetchone()
+        if data is not None:
+            return
+        self.curr.execute(f"INSERT INTO {platform}('id', 'performance_points') VALUES (?, ?);", (id, pp))
+        self.conn.commit()
+    
+    def GetPlayersBetween(self, platform:int, InitialPP:float, NewPP:float) -> Union[tuple, None]:
+        """Gets the players between an specific range of Performance Points"""
+        platform = "top_players_ss" if platform == 0 else "top_players_bl"
+        self.curr.execute(f"SELECT id FROM {platform} WHERE performance_points BETWEEN ? AND ?;",  (InitialPP, NewPP))
+        data = self.curr.fetchall()
+        return data
     
     def LoadPlayerID(self, id:int) -> Union[classes.player, bool]:
         """Loads a specific player data using their steam ID"""

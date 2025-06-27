@@ -17,44 +17,35 @@ async def GetPlayerInfo(did:int) -> list:
     player = DataBaseManager.LoadPlayerDiscord(did)
     if player:
         async with session as ses:
-            async with ses.get(f"https://api.beatleader.xyz/player/{player.id}?stats=true&keepOriginalId=false") as request:
+            async with ses.get(f"https://api.beatleader.com/player/{player.id}?stats=true&keepOriginalId=false") as request:
                 data = json.loads(await request.text())
         embed = PlayerEmbed(discord.Color.purple(), data)
         return embed, False
     embed = ErrorWithFieldsEmbed(GetString("AskUserToLink", "Misc"), [{"name":GetString("NoLinkedAccountUser", "Misc"), "value":" "}])
     return embed, True
 
-async def GetPlayerPassedOther(addedPP:int, PlayerID:str):
+async def GetPlayerPassedOther(PlayerID:str):
     async with aiohttp.ClientSession() as ses:
-        async with ses.get(f"https://api.beatleader.xyz/player/{PlayerID}?stats=true&keepOriginalId=false") as request:
+        async with ses.get(f"https://api.beatleader.com/player/{PlayerID}?keepOriginalId=false") as request:
             playerinfo = json.loads(await request.text())
-    CurrentRank = playerinfo["countryRank"]
-    Page = int(ceil(CurrentRank / 50))
-    Specific = CurrentRank - (Page - 1) * 49
 
-    async with aiohttp.ClientSession() as ses:
-        async with ses.get(f"https://api.beatleader.xyz/players?leaderboardContext=general&page={Page}&count=50&sortBy=pp&mapsType=ranked&ppType=general&order=desc&countries={COUNTRY}&pp_range=%2C&score_range=%2C") as request:
-            data = json.loads(await request.text())
-    PPBefore = data["data"][Specific]["pp"] - addedPP
-    if Specific != len(data["data"]) - 1:
-        PPAdversarial = data["data"][Specific + 1]["pp"]
-    else:
-        async with aiohttp.ClientSession() as ses:
-            async with ses.get(f"https://api.beatleader.xyz/players?leaderboardContext=general&page={Page + 1}&count=50&sortBy=pp&mapsType=ranked&ppType=general&order=desc&countries={COUNTRY}&pp_range=%2C&score_range=%2C") as request:
-                data = json.loads(await request.text())
-        try:
-            PPAdversarial = data["data"][0]["pp"]
-        except:
-            return [False, None, 0, 0, "0"]
-    if PPAdversarial < PPBefore or playerinfo["country"] != COUNTRY:
+    DataBaseManager.InsertPlayer(1, PlayerID, playerinfo["pp"]) # Take into account that 1 = BeatLeader
+    OldPP = DataBaseManager.GetPlayerPP(1, PlayerID)
+    PlayersPassed = DataBaseManager.GetPlayersBetween(1, OldPP[0], playerinfo["pp"])
+    if len(PlayersPassed) <= 1:
         return [False, None, 0, 0, "0"]
-    logging.info(f"El usuario {PlayerID} supero al usuario {data["data"][Specific + 1]["id"]}")
-    return [True, data["data"][Specific + 1]["name"], data["data"][Specific + 1]["id"], PPAdversarial - PPBefore, str(CurrentRank)]
+    PlayersPassed = list(PlayersPassed).remove(PlayerID)
+    async with aiohttp.ClientSession() as ses:
+        async with ses.get(f"https://api.beatleader.com/player/{PlayersPassed[-1][0]}?keepOriginalId=false") as request:
+            adversarialinfo = json.loads(await request.text())
+    DataBaseManager.UpdatePlayerPerformancePoints(1, PlayerID, playerinfo["pp"])
+    return [True, adversarialinfo["name"], adversarialinfo["id"], adversarialinfo["pp"] - playerinfo["pp"], str(playerinfo["countryRank"])]
+
 
 async def Recieve(client:discord.Client):
     while True:
         try:
-            async with websockets.connect("wss://sockets.api.beatleader.xyz/scores") as socket:
+            async with websockets.connect("wss://sockets.api.beatleader.com/scores") as socket:
                 while True:
                     datos = await socket.recv()
                     if datos and "{" in datos:

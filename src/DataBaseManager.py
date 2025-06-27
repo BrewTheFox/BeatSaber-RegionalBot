@@ -51,3 +51,15 @@ def RemoveChannel(channel_id:str):
 
 def GetChannels(channel_type:int) -> list:
     return database.GetChannels(channel_type)
+
+def GetPlayerPP(platform:int, id:str) -> tuple:
+    return database.GetPlayerPP(platform, id)
+
+def UpdatePlayerPerformancePoints(platform:int, id:str, pp:float) -> None:
+    return database.UpdatePlayerPerformancePoints(platform, id, pp)
+
+def InsertPlayer(platform:int, id:str, pp:float) -> None:
+    database.InsertTopPlayer(platform, id, pp)
+
+def GetPlayersBetween(platform:int, InitialPP:float, NewPP:float) -> Union[tuple, None]:
+    return database.GetPlayersBetween(platform, InitialPP, NewPP)

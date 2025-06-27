@@ -8,7 +8,6 @@ import logging
 import DataBaseManager as DataBaseManager
 from Embeds import PlayerEmbed, ErrorWithFieldsEmbed
 from loadconfig import GetString, GetConfiguration
-from math import ceil
 
 COUNTRY = GetConfiguration()['Country']
 
@@ -24,32 +23,22 @@ async def GetPlayerInfo(did:int) -> list:
     embed = ErrorWithFieldsEmbed(GetString("AskUserToLink", "Misc"), [{"name":GetString("NoLinkedAccountUser", "Misc"), "value":" "}])
     return embed, True
 
-async def GetPlayerPassedOther(addedPP:int, PlayerID:str):
+async def GetPlayerPassedOther(PlayerID:str):
     async with aiohttp.ClientSession() as ses:
         async with ses.get(f"https://scoresaber.com/api/player/{PlayerID}/full") as request:
             playerinfo = json.loads(await request.text())
-    CurrentRank = playerinfo["countryRank"]
-    Page = int(ceil(CurrentRank / 50))
-    Specific = CurrentRank - (Page - 1) * 49
 
-    async with aiohttp.ClientSession() as ses:
-        async with ses.get(f"https://scoresaber.com/api/players?countries={COUNTRY}&page={Page}") as request:
-            data = json.loads(await request.text())
-    PPBefore = data["players"][Specific]["pp"] - addedPP
-    if Specific != len(data["players"]) - 1:
-        PPAdversarial = data["players"][Specific + 1]["pp"]
-    else:
-        async with aiohttp.ClientSession() as ses:
-            async with ses.get(f"https://scoresaber.com/api/players?countries={COUNTRY}&page={Page + 1}") as request:
-                data = json.loads(await request.text())
-        try:
-            PPAdversarial = data["players"][0]["pp"]
-        except:
-            return [False, None, 0, 0, "0"]
-    if PPAdversarial < PPBefore or playerinfo["country"] != COUNTRY:
+    DataBaseManager.InsertPlayer(0, PlayerID, playerinfo["pp"]) # Take into account that 0 = ScoreSaber
+    OldPP = DataBaseManager.GetPlayerPP(0, PlayerID)
+    PlayersPassed = DataBaseManager.GetPlayersBetween(0, OldPP[0], playerinfo["pp"])
+    if len(PlayersPassed) <= 1:
         return [False, None, 0, 0, "0"]
-    logging.info(f"El usuario {PlayerID} supero al usuario {data["players"][Specific + 1]["id"]}")
-    return [True, data["players"][Specific + 1]["name"], data["players"][Specific + 1]["id"], PPAdversarial - PPBefore, str(CurrentRank)]
+    PlayersPassed = list(PlayersPassed).remove(PlayerID)
+    async with aiohttp.ClientSession() as ses:
+        async with ses.get(f"https://scoresaber.com/api/player/{PlayersPassed[-1][0]}/full") as request:
+            adversarialinfo = json.loads(await request.text())
+    DataBaseManager.UpdatePlayerPerformancePoints(0, PlayerID, playerinfo["pp"])
+    return [True, adversarialinfo["name"], adversarialinfo["id"], adversarialinfo["pp"] - playerinfo["pp"], str(playerinfo["countryRank"])]
 
 async def Recieve(client:discord.Client):
     while True:

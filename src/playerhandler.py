@@ -95,7 +95,7 @@ async def Link(link:str, uid:int):
             url = f"https://scoresaber.com/api/player/{id}/full"
         if link.startswith("https://beatleader.xyz/u/"):
             id = expresionbl.findall(link)[0]
-            url = f"https://api.beatleader.xyz/player/{id}?stats=false&keepOriginalId=false"
+            url = f"https://api.beatleader.com/player/{id}?stats=false&keepOriginalId=false"
 
         async with session as ses:
             async with ses.get(url) as request:
