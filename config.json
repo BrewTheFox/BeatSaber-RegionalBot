@@ -1,5 +1,5 @@
 {
-    "Country":"CO",
+    "Country":"US",
     "ChallengeParams":{
         "Easy":{
             "Score":[150, 600],
@@ -49,20 +49,17 @@
         },
 
         "ScoreEmbed":{
-            "EmbedTitle":"¡**{{name}}** Logro!",
-            "ToPass":"Pasarse satisfactoriamente **{{song}}**",
-            "Average":"Exactitud:",
-            "Stars":"Estrellas: ",
-            "Score":"Puntaje: ",
-            "Difficulty":"Dificultad",
-            "Device":"Dispositivo",
-            "AddedPerformancePoints":"PP añadido: ",
-            "AddedPerformancePointsBeatLeader":"PP añadido (BL): ",
-            "AddedPerformancePointsScoreSaber":"PP añadido (SS): ",
-            "GoodvsWrong":"Notas logradas:",
-            "LeftController":"Control Izquierdo:",
-            "RightController":"Control derecho:",
-            "Platform":"Plataforma:",
+            "EmbedTitle":"¡**{{name}}** lo logró!",
+            "ToPass":"Se paso satisfactoriamente **{{song}}** en la dificultad **{{difficulty}}** 🎶",
+            "Average":"🎯 Acc:",
+            "Stars":"⭐ Estrellas: ",
+            "Score":"🏆 Puntaje: ",
+            "Device":"🛠️ Dispositivo",
+            "AddedPerformancePoints":"📈 PP: ",
+            "AddedPerformancePointsBeatLeader":"📈 PP(BL): ",
+            "AddedPerformancePointsScoreSaber":"📈 PP(SS): ",
+            "GoodvsWrong":"📝 Notas logradas:",
+            "Platform":"📦 Plataforma:",
             "ViewReplay":"Ver replay",
             "DownloadSong":"Descargar la cancion",
             "LastGameBefore":"El anterior juego de alguien de tu pais fue hace {{var}} partidas.",

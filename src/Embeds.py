@@ -141,12 +141,13 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             buttons.AddButton(playername, f"https://scoresaber.com/u/{playerid}", GetString("ScoreSaberEmoji", "ScoreEmbed"))
         except Exception as e:
             logging.error(f"Ocurrio un error {e} Al momento de asignar las variables de ScoreSaber para el jugador {playername}")
-
+    dificultad = (cancion["dificultad"]).replace("Plus", "+")
+    datos_keys = datos.keys()
     embed = discord.Embed(title=GetString("EmbedTitle", "ScoreEmbed").replace("{{name}}", playername), color=color)
-    embed.add_field(name=GetString("ToPass", "ScoreEmbed").replace("{{song}}", nombrecancion),value=" ",inline=False)
+    embed.add_field(name=GetString("ToPass", "ScoreEmbed").replace("{{song}}", nombrecancion).replace("{{difficulty}}", dificultad),value=" ",inline=False)
     embed.set_thumbnail(url=pfp)
     embed.set_image(url=imagenalbum)
-    embed.add_field(name=GetString("Score", "ScoreEmbed"),value='{:20,.0f}'.format(puntajemod),inline=False)
+    embed.add_field(name=GetString("Score", "ScoreEmbed"),value='{:20,.0f}'.format(puntajemod),inline=True)
 
     if plataforma == "ScoreSaber" or plataforma == "Beatleader":
         embed.add_field(name=GetString("AddedPerformancePoints", "ScoreEmbed"),value=str(round(float(pp * weight),2)),inline=True)
@@ -155,20 +156,18 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
         embed.add_field(name=GetString("AddedPerformancePointsScoreSaber", "ScoreEmbed"),value=str(round(float(pp[0] * weight[0]), 2)),inline=True)
 
     if puntajemaximo != 0:
-        embed.add_field(name=GetString("Average", "ScoreEmbed"), value=str(round((puntajebase / puntajemaximo) * 100, 2)) + "%")
-        embed.add_field(name=GetString("Stars", "ScoreEmbed"), value=str(estrellas))
+        embed.add_field(name=GetString("Average", "ScoreEmbed"), value=str(round((puntajebase / puntajemaximo) * 100, 2)) + "%", inline=True)
+        embed.add_field(name=GetString("Stars", "ScoreEmbed"), value=str(estrellas) + "★", inline=True)
 
         if not "error" in cancion.keys():
-            embed.add_field(name=GetString("GoodvsWrong", "ScoreEmbed"), value=str(cancion["notas"] - fallos) + "/" + str(cancion["notas"]))
-            embed.add_field(name=GetString("Difficulty", "ScoreEmbed"), value=cancion["dificultad"])
-        embed.add_field(name=GetString("Device", "ScoreEmbed"), value=hmd, inline=False)
+            embed.add_field(name=GetString("GoodvsWrong", "ScoreEmbed"), value=str(cancion["notas"] - fallos) + "/" + str(cancion["notas"]), inline=True)
+        if "Scoresaber" in datos_keys:
+            hmd += f'({datos["commandData"]["score"]["deviceControllerRight"]})'
 
-        if "Scoresaber" in datos.keys():
-            embed.add_field(name=GetString("RightController", "ScoreEmbed"), value=datos["commandData"]["score"]["deviceControllerRight"])
-            embed.add_field(name=GetString("LeftController", "ScoreEmbed"), value=datos["commandData"]["score"]["deviceControllerLeft"])
-        embed.add_field(name=GetString("Platform", "ScoreEmbed"), value=plataforma, inline=False)
+        embed.add_field(name=GetString("Device", "ScoreEmbed"), value=hmd, inline=True)
+        embed.add_field(name=GetString("Platform", "ScoreEmbed"), value=plataforma, inline=True)
 
-        if "replay" in datos.keys():
+        if "replay" in datos_keys:
             buttons.AddButton(GetString("ViewReplay", "ScoreEmbed"), replay, "<a:bspepe:1368253102880329808>")
 
         if not "error" in cancion.keys():

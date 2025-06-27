@@ -54,8 +54,7 @@ async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
         pp = datos["contextExtensions"][0]["pp"]
         pfp = datos["player"]["avatar"]
         estrellas = round(datos["leaderboard"]["difficulty"].get("stars") or 0, 2)
-        weight = datos["contextExtensions"][0]["weight"]
-        overcameplayer = await beatleader.GetPlayerPassedOther(pp * weight, str(playerid))
+        overcameplayer = await beatleader.GetPlayerPassedOther(str(playerid))
         await SendOvercomeEmbed(overcameplayer, client, playername, playerid, pfp, "Beatleader")
     if "Scoresaber" in datos.keys():
         playerid = str(datos["commandData"]["score"]['leaderboardPlayerInfo']["id"])
@@ -63,8 +62,7 @@ async def PostEmbeds(*, datos:dict, client: discord.Client, gamestill:int):
         puntajemod = datos["commandData"]["score"]["modifiedScore"]
         pp = datos["commandData"]["score"]["pp"]
         estrellas = datos["commandData"]["leaderboard"]["stars"]
-        weight = datos["commandData"]["score"]["weight"]
-        overcameplayer = await scoresaber.GetPlayerPassedOther(pp * weight, str(playerid))
+        overcameplayer = await scoresaber.GetPlayerPassedOther(str(playerid))
         pfp = datos["commandData"]["score"]['leaderboardPlayerInfo']["profilePicture"]
         await SendOvercomeEmbed(overcameplayer, client, playername, playerid, pfp, "Scoresaber")
 
