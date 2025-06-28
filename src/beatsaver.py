@@ -12,7 +12,7 @@ async def songinfo(hash:str, dificulty:str) -> dict:
             for dificultades in datos["versions"][0]["diffs"]:
                 if dificultades["difficulty"].lower() == dificultad[0].lower() and dificultades["characteristic"] in dificultad[1]:
                     return {"imagen":datos["versions"][0]["coverURL"],"notas":dificultades["notes"], "bombas":dificultades["bombs"], "dificultad":dificultades["difficulty"], "codigo":datos["id"], "nombre": datos["name"]}
-            return {'error': 'Not Found'}
+            return {'imagen': 'https://cdn.scoresaber.com/avatars/steam.png', "notas":0, "bombas":0, "dificultad":"Desconocida", "codigo":"00000", "Nombre":"Cancion que no se encuentra en BeatSaver!"}
     except:
-        return {'error': 'Internal'}
+        return {'imagen': 'https://cdn.scoresaber.com/avatars/steam.png', "notas":0, "bombas":0, "dificultad":"Desconocida", "codigo":"00000", "Nombre":"Cancion que no se encuentra en BeatSaver / Conexion erronea!"}
     return datos
