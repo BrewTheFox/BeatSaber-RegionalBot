@@ -34,7 +34,8 @@ async def GetPlayerPassedOther(PlayerID:str):
     PlayersPassed = DataBaseManager.GetPlayersBetween(1, OldPP[0], playerinfo["pp"])
     if len(PlayersPassed) <= 1 or PlayersPassed == None:
         return [False, None, 0, 0, "0"]
-    PlayersPassed = list(PlayersPassed).remove(PlayerID)
+    if PlayerID in PlayersPassed:
+        PlayersPassed = list(PlayersPassed).remove(PlayerID)
     async with aiohttp.ClientSession() as ses:
         async with ses.get(f"https://api.beatleader.com/player/{PlayersPassed[-1][0]}?keepOriginalId=false") as request:
             adversarialinfo = json.loads(await request.text())
