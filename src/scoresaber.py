@@ -31,10 +31,10 @@ async def GetPlayerPassedOther(PlayerID:str):
     DataBaseManager.InsertPlayer(0, PlayerID, playerinfo["pp"]) # Take into account that 0 = ScoreSaber
     OldPP = DataBaseManager.GetPlayerPP(0, PlayerID)
     PlayersPassed = DataBaseManager.GetPlayersBetween(0, OldPP[0], playerinfo["pp"])
-    if len(PlayersPassed) <= 1 or PlayersPassed == None:
-        return [False, None, 0, 0, "0"]
     if PlayerID in PlayersPassed:
         PlayersPassed = list(PlayersPassed).remove(PlayerID)
+    if len(PlayersPassed) <= 1 or PlayersPassed == None:
+        return [False, None, 0, 0, "0"]
     async with aiohttp.ClientSession() as ses:
         async with ses.get(f"https://scoresaber.com/api/player/{PlayersPassed[-1][0]}/full") as request:
             adversarialinfo = json.loads(await request.text())
