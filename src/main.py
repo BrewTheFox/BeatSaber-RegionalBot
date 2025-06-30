@@ -57,6 +57,10 @@ async def generatechallenge(interaction: discord.Interaction, dificultad: Litera
     embed = challenges.GenerateChallenge(interaction.user.id, dificultad)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
+@tree.command(name="reto_nuevo", description="Te permite retar a un jugador en una cancion.")
+async def challengeplayer(interaction:discord.Interaction, bsr:str, jugador:discord.Member):
+    
+
 @tree.command(name="vincular", description="Vincula una cuenta de beatsaber con tu cuenta de discord.")
 async def link(interaction: discord.Interaction, link:str):
     embed = await playerhandler.Link(link, interaction.user.id)

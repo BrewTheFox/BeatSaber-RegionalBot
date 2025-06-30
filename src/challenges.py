@@ -16,6 +16,7 @@ def CheckChallenge(id:str, pp:int, estrellas:float, puntaje:int) -> list:
             return [puntaje >= points, puntaje]
 
 
+
 def GenerateChallenge(uid:int, difficulty:str):
     """This generates a challenge given a difficulty"""
     retos = ["Score", "Stars", "PP"]
