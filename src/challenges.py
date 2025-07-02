@@ -24,6 +24,8 @@ async def ChallengePlayer(bsr:str, challenger:discord.Member, player:discord.Mem
         return [ErrorEmbed(GetString("AskUserToLink", "Misc")), True]
     if player.id == challenger.id:
         return [ErrorEmbed(GetString("InvalidUser", "Challenges")), True]
+    if player.bot:
+        return [ErrorEmbed(GetString("InvalidUser", "Challenges")), True]
     buttons = buttonViews.AcceptButtons()
     buttons.Buttons("Aceptar", "Cancelar", challenger.id, player.id, code)
     embed = discord.Embed(title=GetString("UserChallengedNotification", "Challenges").replace("{{challenger}}", challenger.display_name).replace("{{challenged}}", player.display_name).replace("{{songName}}", songinfo[1]), color=discord.Colour.og_blurple())
