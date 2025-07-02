@@ -1,7 +1,7 @@
 import discord
 from loadconfig import GetString, GetConfiguration
 import logging
-from classes import Buttons
+import buttonViews
 import beatsaver as beatsaver
 
 def PlayerEmbed(color:discord.Colour, data:dict) -> discord.Embed:
@@ -30,7 +30,7 @@ def SuccessEmbed(title:str):
     return embed
 
 def OvercomeEmbed(OvercomedName:str, OvercomedID:str, OvercomerName:str, OvercomerID:str, OvercomerPFP:str, DiffPoints:float, leaderboardposition:str, platform:str):
-    buttons = Buttons()
+    buttons = buttonViews.Buttons()
     embed = discord.Embed(title=GetString("OvercomeTitle", "Overcome").replace("{{name1}}", OvercomerName).replace("{{name2}}", OvercomedName), color=discord.Color.blurple())
     DiffPoints = f'{int(DiffPoints):,}'
     leaderboardposition = f'{int(leaderboardposition):,}'
@@ -64,7 +64,7 @@ def ChallengeEmbed(datos:dict, challenge:str, points:str, playerid:str, values:l
 
 
 async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
-    buttons = Buttons()
+    buttons = buttonViews.Buttons()
     if "Scoresaber" in datos.keys() and "Beatleader" in datos.keys():
         try:
             plataforma = "ScoreSaber y Beatleader"

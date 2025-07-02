@@ -1,6 +1,5 @@
 import DataBaseConn as DataBaseConn
-import classes as classes
-from typing import Union
+from typing import Union, Optional
 
 database = DataBaseConn.db()
 
@@ -10,38 +9,32 @@ def GetChallenge(id:str):
 def GetChallengeDiscord(discord:str):
     return database.GetChallengeDiscord(discord)
 
+def UpdateChallenge(id:str, score:str) -> None:
+    return database.UpdateChallenge(id, score)
+
+def LeaderboardTop() -> Optional[tuple]:
+    return database.LeaderboardTop()
+
 def CompleteChallenge(id:str):
-    difficulty = database.GetChallenge(id)
-    if difficulty:
-        difficulty = difficulty[2]
-        match difficulty:
-            case ("Easy"):
-                database.CompleteChallenge(id, 500)
-            case("Hard"):
-                database.CompleteChallenge(id, 1000)
-            case("Expert+"):
-                database.CompleteChallenge(id, 2000)
-            case _:
-                database.CompleteChallenge(id, 0)
+    return database.CompleteChallenge(id)
     
 def CancelChallenge(discord:str):
-    player = database.LoadPlayerDiscord(discord)
-    database.CompleteChallenge(player.id, 0)
+    database.CancelChallenge(discord)
 
-def SetChallenge(discord:str, difficulty:str, type:str, points:int):
-    return database.SetChallenge(discord, difficulty, type, points)
+def SetChallenge(challenged:str, challenger:str, songID:str) -> bool:
+    return database.SetChallenge(challenged, challenger, songID)
 
-def LoadPlayerDiscord(discord:str) -> Union[classes.player, bool]:
+def LoadPlayerDiscord(discord:str) -> Union[list, bool]:
     return database.LoadPlayerDiscord(discord)
 
-def LoadPlayerID(id:str) -> Union[classes.player, bool]:
+def LoadPlayerID(id:str) -> Union[list, bool]:
     return database.LoadPlayerID(id)
 
-def RemovePlayer(discord:str):
-    database.RemovePlayer(discord)
+def InsertPlayer(discord:str, id:str):
+    database.InsertPlayer(discord, id)
 
-def InsertPlayer(player:classes.player):
-    database.InsertPlayer(player)
+def DeletePlayer(discord:str):
+    database.DeletePlayer(discord)
 
 def SetChannel(channel_id:str, channel_type:int):
     database.SetChannel(channel_id, channel_type)
@@ -58,8 +51,8 @@ def GetPlayerPP(platform:int, id:str) -> tuple:
 def UpdatePlayerPerformancePoints(platform:int, id:str, pp:float) -> None:
     return database.UpdatePlayerPerformancePoints(platform, id, pp)
 
-def InsertPlayer(platform:int, id:str, pp:float) -> None:
+def InsertTopPlayer(platform:int, id:str, pp:float) -> None:
     database.InsertTopPlayer(platform, id, pp)
 
-def GetPlayersBetween(platform:int, InitialPP:float, NewPP:float) -> Union[tuple, None]:
+def GetPlayersBetween(platform:int, InitialPP:float, NewPP:float) -> Optional[tuple]:
     return database.GetPlayersBetween(platform, InitialPP, NewPP)
