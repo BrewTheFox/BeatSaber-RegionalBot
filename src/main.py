@@ -52,10 +52,17 @@ async def cancel(interaction: discord.Interaction):
     embed = challenges.CancelChallenge(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
-@tree.command(name="reto", description="Asigna un reto dentro del juego.")
-async def generatechallenge(interaction: discord.Interaction, dificultad: Literal["Easy", "Hard", "Expert+"]):
-    embed = challenges.GenerateChallenge(interaction.user.id, dificultad)
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+@tree.command(name="leaderboard", description="Retorna el leaderboard de los retos :)")
+async def leaderboard(interaction:discord.Interaction):
+    await interaction.response.send_message(embed=await challenges.Leaderboard(client))
+
+@tree.command(name="reto", description="Te permite retar a un jugador en una cancion.")
+async def challengeplayer(interaction:discord.Interaction, bsr:str, jugador:discord.Member):
+    embed = await challenges.ChallengePlayer(bsr, interaction.user, jugador)
+    if len(embed) == 3:
+        await interaction.response.send_message(content=f"<@{jugador.id}>", embed=embed[0], view=embed[1], ephemeral=embed[2])
+    else:
+        await interaction.response.send_message(embed=embed[0], ephemeral=embed[1])
 
 @tree.command(name="vincular", description="Vincula una cuenta de beatsaber con tu cuenta de discord.")
 async def link(interaction: discord.Interaction, link:str):
@@ -108,7 +115,7 @@ async def on_ready():
     except Exception as e:
         logging.error(e)
 
-    client.loop.create_task(beatleader.Recieve(client))
-    client.loop.create_task(scoresaber.Recieve(client))
+    client.loop.create_task(beatleader.Recive(client))
+    client.loop.create_task(scoresaber.Recive(client))
     client.loop.create_task(EmbedPoster.UpdateList())
 client.run(os.getenv("token"))

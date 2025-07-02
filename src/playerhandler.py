@@ -6,7 +6,6 @@ import json
 import re
 import asyncio
 import logging
-import classes as classes
 import DataBaseManager as DataBaseManager
 from Embeds import ErrorEmbed, SuccessEmbed
 from loadconfig import GetString
@@ -115,7 +114,7 @@ async def Link(link:str, uid:int):
                     embed.set_thumbnail(url=datos["avatar"])
                 if link.startswith("https://scoresaber.com/u/"):
                     embed.set_thumbnail(url=datos["profilePicture"])
-                DataBaseManager.InsertPlayer(classes.player(id=str(id), discord=str(uid), challenge=None, total_points=0, points=None))
+                DataBaseManager.InsertPlayer(id=str(id), discord=str(uid))
                 return embed
             
         else:
@@ -130,13 +129,13 @@ async def Unlink(uid:int):
     session = aiohttp.ClientSession()
     player = DataBaseManager.LoadPlayerDiscord(str(uid))
     if player:
-        url = f"https://scoresaber.com/api/player/{player.id}/full"
+        url = f"https://scoresaber.com/api/player/{player[0]}/full"
         async with session as ses:
             async with ses.get(url) as request:
                 datos = json.loads(await request.text())
         embed = SuccessEmbed(title=GetString("SuccessUnlink", "UserHandling").replace("{{name}}", datos['name']))
         embed.set_thumbnail(url=datos["profilePicture"])
-        DataBaseManager.RemovePlayer(uid)
+        DataBaseManager.DeletePlayer(uid)
     else:
         embed = ErrorEmbed(GetString("NoAccountToUnlink", "UserHandling"))
     return embed

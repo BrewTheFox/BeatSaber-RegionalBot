@@ -24,8 +24,8 @@
 
     "Strings":{
         "Misc":{
-            "AskUserToLink":"**Si la consulta es para ti usa /vincular, si es para otro usuario pidele que vincule su cuenta.**",
-            "NoLinkedAccountUser":"¡No hay una cuenta de scoresaber vinculada a este usuario!",
+            "AskUserToLink":"**Parece que el usuario al que estas intentando retar/stalkear no ha vinculado su cuenta.**",
+            "NoLinkedAccountUser":"¡No hay una cuenta vinculada a este usuario!",
             "UserHasNoLinkedAccount":"Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion."
         },
         "ProfileRequest":{
@@ -36,16 +36,19 @@
         },
 
         "Challenges":{
-            "AlreadyChallenged":"¡Ya solicitaste un reto /cancelar si no lo quieres!",
-            "UserHasNoChallenge":"No has solicitado ningun reto :(",
-            "ScoreChallenge":"¡Consigue mas de {{var}} puntos en un nivel!",
-            "StarsChallenge":"¡Pasate un nivel de {{var}} estrellas o mas!",
-            "PPChallenge":"¡Pasate un nivel con mas de {{var}} PP!",
-            "CancelChallenge":"Cancelaste tu reto :(",
-            "UserCompletedChallenge":"¡Muy bien {{name}}, Lograste superar el reto!",
-            "Category":"Categoria:",
-            "OvercomeValue":"Valor a superar:",
-            "ObtainedValue":"Valor obtenido:"
+            "CancelChallenge":"Se ha cancelado el reto y se le ha dado a tu oponente un punto.",
+            "UserHasNoChallenge": "No tienes ningun reto ahora mismo.",
+            "InvalidBSR":"El BSR seleccionado es invalido.",
+            "InvalidPlayer":"Claramente este reto no es para ti.",
+            "Accept":"Aceptar",
+            "Deny": "Rechazar",
+            "UserChallengedNotification": "El usuario {{challenger}} ha retado a {{challenged}} a competir por el mayor puntaje en la cancion {{songName}}!",
+            "UserChallengeDeny": "Se ha cancelado el reto.",
+            "UserChallengeAccept": "Se ha aceptado el reto, PD: el ID de la cancion es **{{SongID}}**",
+            "UserHasChallenge": "Alguno de los dos usuarios ya tiene un reto pendiente",
+            "UserWonChallenge": "El usuario {{name1}} gano el reto frente al usuario {{name2}} en la cancion {{SongID}}",
+            "InvalidUser": "No le puedes enviar reto a este usuario.",
+            "Leaderboard": "Leaderboard"
         },
 
         "ScoreEmbed":{

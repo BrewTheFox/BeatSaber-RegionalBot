@@ -17,7 +17,7 @@ async def GetPlayerInfo(did:int) -> list:
     player = DataBaseManager.LoadPlayerDiscord(did)
     if player:
         async with session as ses:
-            async with ses.get(f"https://api.beatleader.com/player/{player.id}?stats=true&keepOriginalId=false") as request:
+            async with ses.get(f"https://api.beatleader.com/player/{player[0]}?stats=true&keepOriginalId=false") as request:
                 data = json.loads(await request.text())
         embed = PlayerEmbed(discord.Color.purple(), data)
         return embed, False
@@ -29,7 +29,7 @@ async def GetPlayerPassedOther(PlayerID:str):
         async with ses.get(f"https://api.beatleader.com/player/{PlayerID}?keepOriginalId=false") as request:
             playerinfo = json.loads(await request.text())
 
-    DataBaseManager.InsertPlayer(1, PlayerID, playerinfo["pp"]) # Take into account that 1 = BeatLeader
+    DataBaseManager.InsertTopPlayer(1, PlayerID, playerinfo["pp"]) # Take into account that 1 = BeatLeader
     OldPP = DataBaseManager.GetPlayerPP(1, PlayerID)
     PlayersPassed = DataBaseManager.GetPlayersBetween(1, OldPP[0], playerinfo["pp"])
     if PlayerID in PlayersPassed:
@@ -43,7 +43,7 @@ async def GetPlayerPassedOther(PlayerID:str):
     return [True, adversarialinfo["name"], adversarialinfo["id"], adversarialinfo["pp"] - playerinfo["pp"], str(playerinfo["countryRank"])]
 
 
-async def Recieve(client:discord.Client):
+async def Recive(client:discord.Client):
     while True:
         try:
             async with websockets.connect("wss://sockets.api.beatleader.com/scores") as socket:

@@ -2,59 +2,27 @@ import DataBaseManager as DataBaseManager
 import DataBaseConn as DataBaseConn
 import challenges as challenges
 from loadconfig import GetString, GetConfiguration
-from classes import player
 from Embeds import PlayerEmbed
 from discord import Color
 
 DataBaseManager.database = DataBaseConn.db(":memory:")
 
 def testInsertPlayer():
-    playerinstance = player('99999', "444444", None, 0, 0)
-    DataBaseManager.InsertPlayer(playerinstance)
+
+    DataBaseManager.InsertPlayer("444444", "99999")
     retrievedplayer = DataBaseManager.LoadPlayerDiscord("444444")
-    assert retrievedplayer.id == playerinstance.id
-    assert retrievedplayer.discord == playerinstance.discord
-    assert retrievedplayer.challenge == playerinstance.challenge
-    assert retrievedplayer.total_points == playerinstance.total_points
-    assert retrievedplayer.points == playerinstance.points
+    assert "444444" == retrievedplayer[0]
+    assert "99999" == retrievedplayer[1]
+    assert 0 == retrievedplayer[2]
 
 def testPlayerLoading():
-    retrievedplayerdiscord = DataBaseManager.LoadPlayerDiscord("444444")
     invalidplayerdiscord = DataBaseManager.LoadPlayerDiscord("inexistent")
-    retrievedplayerid = DataBaseManager.LoadPlayerID('99999')
     invalidplayerid = DataBaseManager.LoadPlayerID("inexistent")
-    assert type(retrievedplayerdiscord) == player
-    assert type(retrievedplayerid) == player
     assert invalidplayerdiscord == False
     assert invalidplayerid == False
 
-def testChallengeGeneration():
-    challenge = challenges.GenerateChallenge('444444', "Easy")
-    assert challenge.title != GetString("AlreadyChallenged", "Challenges")
-    assert challenge.title != GetString("UserHasNoLinkedAccount", "Misc")
-    challenge = challenges.GenerateChallenge('99999', "Easy")
-    assert challenge.title == GetString("UserHasNoLinkedAccount", "Misc")
-    challenge = challenges.GenerateChallenge('444444', "Easy")
-    assert challenge.title == GetString("AlreadyChallenged", "Challenges")
-    player = DataBaseManager.LoadPlayerID('99999')
-    assert player.challenge != None
-
-def testChallengeCompletion():
-    DataBaseManager.CompleteChallenge('99999')
-    player = DataBaseManager.LoadPlayerID('99999')
-    assert player.challenge == None
-    assert player.total_points == 500
-    assert player.points == None
-
-def testChallengeCancellation():
-    embed = challenges.CancelChallenge('444444')
-    assert embed.title == GetString("UserHasNoChallenge", "Challenges")
-    challenges.GenerateChallenge('444444', "Hard")
-    embed = challenges.CancelChallenge('444444')
-    assert embed.title == GetString("CancelChallenge", "Challenges")
-
 def testPlayerDeletion():
-    DataBaseManager.RemovePlayer('444444')
+    DataBaseManager.DeletePlayer('444444')
     retrievedplayerdiscord = DataBaseManager.LoadPlayerDiscord("444444")
     assert retrievedplayerdiscord == False
 

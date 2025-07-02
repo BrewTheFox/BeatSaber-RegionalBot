@@ -16,7 +16,7 @@ async def GetPlayerInfo(did:int) -> list:
     player = DataBaseManager.LoadPlayerDiscord(did)
     if player:
         async with session as ses:
-            async with ses.get(f"https://scoresaber.com/api/player/{player.id}/full") as request:
+            async with ses.get(f"https://scoresaber.com/api/player/{player[0]}/full") as request:
                 data = json.loads(await request.text())
         embed = PlayerEmbed(discord.Color.yellow(), data)
         return embed, False
@@ -28,7 +28,7 @@ async def GetPlayerPassedOther(PlayerID:str):
         async with ses.get(f"https://scoresaber.com/api/player/{PlayerID}/full") as request:
             playerinfo = json.loads(await request.text())
 
-    DataBaseManager.InsertPlayer(0, PlayerID, playerinfo["pp"]) # Take into account that 0 = ScoreSaber
+    DataBaseManager.InsertTopPlayer(0, PlayerID, playerinfo["pp"]) # Take into account that 0 = ScoreSaber
     OldPP = DataBaseManager.GetPlayerPP(0, PlayerID)
     PlayersPassed = DataBaseManager.GetPlayersBetween(0, OldPP[0], playerinfo["pp"])
     if PlayerID in PlayersPassed:
@@ -41,7 +41,7 @@ async def GetPlayerPassedOther(PlayerID:str):
     DataBaseManager.UpdatePlayerPerformancePoints(0, PlayerID, playerinfo["pp"])
     return [True, adversarialinfo["name"], adversarialinfo["id"], adversarialinfo["pp"] - playerinfo["pp"], str(playerinfo["countryRank"])]
 
-async def Recieve(client:discord.Client):
+async def Recive(client:discord.Client):
     while True:
         try:
             async with websockets.connect("wss://scoresaber.com/ws") as socket:
