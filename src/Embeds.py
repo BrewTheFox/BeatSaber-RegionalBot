@@ -78,7 +78,7 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             puntajemod = datos["commandData"]["score"]["modifiedScore"]
             puntajebase = datos["commandData"]["score"]["baseScore"]
             hmd = HMDs[str(datos["hmd"])]
-            pp = datos["commandData"]["score"]["pp"], datos["contextExtensions"][0]["pp"]
+            pp = datos["commandData"]["score"]["pp"], datos["pp"]
             estrellas = round(max([datos["commandData"]["leaderboard"]["stars"], datos["leaderboard"]["difficulty"]["stars"] or 0]), 2)
             weight = datos["commandData"]["score"]["weight"], datos["contextExtensions"][0]["weight"]
             puntajemaximo = datos["commandData"]["leaderboard"]["maxScore"]
@@ -105,10 +105,10 @@ async def ScoreEmbed(datos:dict, HMDs:dict, gamestill:int):
             modo = datos["leaderboard"]["difficulty"]["modeName"]
             nombrecancion = datos["leaderboard"]["song"]["name"]
             imagenalbum = datos["leaderboard"]["song"]["coverImage"]
-            puntajemod = datos["contextExtensions"][0]["modifiedScore"]
-            puntajebase = datos["contextExtensions"][0]["baseScore"]
-            pp = datos["contextExtensions"][0]["pp"]
-            weight = datos["contextExtensions"][0]["weight"]
+            puntajemod = datos["modifiedScore"]
+            puntajebase = datos["baseScore"]
+            pp = datos["pp"]
+            weight = datos["weight"]
             estrellas = round(datos["leaderboard"]["difficulty"]["stars"] or 0, 2)
             puntajemaximo = datos["leaderboard"]["difficulty"]["maxScore"]
             fallos = (abs(datos["badCuts"]) + abs(datos["missedNotes"]))
