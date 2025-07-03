@@ -39,7 +39,7 @@ async def GetPlayerPassedOther(PlayerID:str):
         async with ses.get(f"https://scoresaber.com/api/player/{PlayersPassed[-1][0]}/full") as request:
             adversarialinfo = json.loads(await request.text())
     DataBaseManager.UpdatePlayerPerformancePoints(0, PlayerID, playerinfo["pp"])
-    return [True, adversarialinfo["name"], adversarialinfo["id"], adversarialinfo["pp"] - playerinfo["pp"], str(playerinfo["countryRank"])]
+    return [True, adversarialinfo["name"], adversarialinfo["id"], playerinfo["pp"] - adversarialinfo["pp"], str(playerinfo["countryRank"])]
 
 async def Recive(client:discord.Client):
     while True:
