@@ -40,7 +40,7 @@ async def GetPlayerPassedOther(PlayerID:str):
         async with ses.get(f"https://api.beatleader.com/player/{PlayersPassed[-1][0]}?keepOriginalId=false") as request:
             adversarialinfo = json.loads(await request.text())
     DataBaseManager.UpdatePlayerPerformancePoints(1, PlayerID, playerinfo["pp"])
-    return [True, adversarialinfo["name"], adversarialinfo["id"], adversarialinfo["pp"] - playerinfo["pp"], str(playerinfo["countryRank"])]
+    return [True, adversarialinfo["name"], adversarialinfo["id"], playerinfo["pp"] - adversarialinfo["pp"], str(playerinfo["countryRank"])]
 
 
 async def Recive(client:discord.Client):
