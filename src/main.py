@@ -60,7 +60,7 @@ async def leaderboard(interaction:discord.Interaction):
 async def challengeplayer(interaction:discord.Interaction, bsr:str, jugador:discord.Member):
     embed = await challenges.ChallengePlayer(bsr, interaction.user, jugador)
     if len(embed) == 3:
-        await interaction.response.send_message(content=f"<@{jugador.id}>", embed=embed[0], view=embed[1], ephemeral=embed[2])
+        await interaction.response.send_message(content=f"<@{jugador.id}>", embed=embed[0], view=embed[1], ephemeral=embed[2], delete_after=180)
     else:
         await interaction.response.send_message(embed=embed[0], ephemeral=embed[1])
 
