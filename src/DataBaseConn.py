@@ -177,20 +177,22 @@ class db():
         data = self.cur.fetchone()
         if data:
             self.cur.execute("DELETE FROM challenges WHERE challengerID=?", (id, ))
+            self.conn.commit()
             self.AddChallengePoint(data[0], 1)
             self.AddChallengePoint(id, -1)
         self.cur.execute("SELECT challengerID from challenges WHERE challengedID=?;", (id, ))
         if data:
             self.cur.execute("DELETE FROM challenges WHERE challengedID=?", (id, ))
+            self.conn.commit()
             self.AddChallengePoint(data[0], 1)
             self.AddChallengePoint(id, -1)
         data = self.cur.fetchone()
-        self.conn.commit()
         return True
     
     def AddChallengePoint(self, PlayerID:str, Ammount:int):
         """Adds Challenge Points to a player"""
         self.cur.execute("UPDATE players SET total_challenge_points = total_challenge_points + ? WHERE id = ?;", (Ammount, PlayerID))
+        self.conn.commit()
 
     def RemoveChannel(self, channel_id:str):
         """Deletes a channel from the database"""
