@@ -32,9 +32,7 @@ async def GetPlayerPassedOther(PlayerID:str):
     OldPP = DataBaseManager.GetPlayerPP(0, PlayerID)
     PlayersPassed = DataBaseManager.GetPlayersBetween(0, OldPP[0], playerinfo["pp"])
     PlayersPassed = list(PlayersPassed)
-    if PlayerID in PlayersPassed:
-        PlayersPassed.remove(PlayerID)
-    if PlayerID == PlayersPassed[-1]:
+    if PlayerID == PlayersPassed[-1][0]:
         PlayersPassed.pop(-1)
     if len(PlayersPassed) < 1 or PlayersPassed == None:
         return [False, None, 0, 0, "0"]
