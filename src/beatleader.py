@@ -33,15 +33,18 @@ async def GetPlayerPassedOther(PlayerID:str):
     OldPP = DataBaseManager.GetPlayerPP(1, PlayerID)
     PlayersPassed = DataBaseManager.GetPlayersBetween(1, OldPP[0], playerinfo["pp"])
     PlayersPassed = list(PlayersPassed)
-    if PlayerID == PlayersPassed[-1][0]:
-        PlayersPassed.pop(-1)
-    if len(PlayersPassed) < 1 or PlayersPassed == None:
-        return [False, None, 0, 0, "0"]
-    async with aiohttp.ClientSession() as ses:
-        async with ses.get(f"https://api.beatleader.com/player/{PlayersPassed[-1][0]}?keepOriginalId=false") as request:
-            adversarialinfo = json.loads(await request.text())
-    DataBaseManager.UpdatePlayerPerformancePoints(1, PlayerID, playerinfo["pp"])
-    return [True, adversarialinfo["name"], adversarialinfo["id"], playerinfo["pp"] - adversarialinfo["pp"], str(playerinfo["countryRank"])]
+    try:
+        if PlayerID == PlayersPassed[-1][0]:
+            PlayersPassed.pop(-1)
+        if len(PlayersPassed) < 1 or PlayersPassed == None:
+            return [False, None, 0, 0, "0"]
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(f"https://api.beatleader.com/player/{PlayersPassed[-1][0]}?keepOriginalId=false") as request:
+                adversarialinfo = json.loads(await request.text())
+        DataBaseManager.UpdatePlayerPerformancePoints(1, PlayerID, playerinfo["pp"])
+        return [True, adversarialinfo["name"], adversarialinfo["id"], abs(playerinfo["pp"] - adversarialinfo["pp"]), str(playerinfo["countryRank"])]
+    except:
+        return [False, None, 0,0, "0"]
 
 
 async def Recive(client:discord.Client):
