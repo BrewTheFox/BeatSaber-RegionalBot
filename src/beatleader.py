@@ -50,7 +50,7 @@ async def GetPlayerPassedOther(PlayerID:str):
 async def Recive(client:discord.Client):
     while True:
         try:
-            async with websockets.connect("wss://sockets.api.beatleader.com/scores") as socket:
+            async with websockets.connect("wss://sockets.api.beatleader.xyz/scores") as socket:
                 while True:
                     datos = await socket.recv()
                     if datos and "{" in datos:
