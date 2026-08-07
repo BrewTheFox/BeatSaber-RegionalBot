@@ -175,7 +175,7 @@ async def score(data: dict, HMDs: dict, games_until: int):
             fails = int(data["commandData"]["score"]["badCuts"]) + int(
                 data["commandData"]["score"]["missedNotes"]
             )
-            beatleader_replay = "https://replay.beatleader.com/?scoreId=" + str(
+            replay = "https://replay.beatleader.com/?scoreId=" + str(
                 data["id"]
             )
             buttons.add_button(
