@@ -48,7 +48,8 @@
             "UserHasChallenge": "Alguno de los dos usuarios ya tiene un reto pendiente",
             "UserWonChallenge": "El usuario {{name1}} gano el reto frente al usuario {{name2}} en la cancion {{SongID}}",
             "InvalidUser": "No le puedes enviar reto a este usuario.",
-            "Leaderboard": "Leaderboard"
+            "Leaderboard": "Leaderboard",
+            "NoPlays": "Nadie ha jugado..."
         },
 
         "ScoreEmbed":{
@@ -66,6 +67,7 @@
             "ViewReplay":"Ver replay",
             "DownloadSong":"Descargar la cancion",
             "LastGameBefore":"El anterior juego de alguien de tu pais fue hace {{var}} partidas.",
+            "BothPlatforms":"Beatleader y Scoresaber",
             "BeatLeaderEmoji":"<:beatleader:1326638016277516429>",
             "ScoreSaberEmoji":"<:scoresaber:1326637802963734528>",
             "ReplayEmoji":"<a:bspepe:1368253102880329808>",
