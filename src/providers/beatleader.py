@@ -7,7 +7,7 @@ import asyncio
 import logging
 from database import manager
 from core.load_config import get_string, get_configuration
-from core.embeds import error
+from core.embeds import error_with_fields
 
 COUNTRY = get_configuration()["Country"]
 
@@ -23,7 +23,7 @@ async def get_player_info(did: int) -> tuple:
                 data = json.loads(await request.text())
         embed = player(discord.Color.purple(), data)
         return embed, False
-    embed = error(
+    embed = error_with_fields(
         get_string("AskUserToLink", "Misc"),
         [{"name": get_string("NoLinkedAccountUser", "Misc"), "value": " "}],
     )

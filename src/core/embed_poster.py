@@ -4,8 +4,8 @@ import asyncio
 import re
 import logging
 from database import manager
-import challenges as challenges
-from embeds import score, challenge, overcome
+from core import challenges
+from core.embeds import score, challenge, overcome
 from providers import scoresaber
 from providers import beatleader
 

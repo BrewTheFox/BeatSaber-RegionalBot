@@ -4,8 +4,8 @@ import re
 import providers.beatsaver as beatsaver
 from views import button
 from typing import Optional
-from embeds import error
-from load_config import get_string
+from core.embeds import error
+from core.load_config import get_string
 
 BSRRE = re.compile(r"!bsr ([a-z-0-9]*)")
 

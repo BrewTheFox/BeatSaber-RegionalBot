@@ -16,7 +16,7 @@ client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
 logging.info("Loading users...")
 
-"""Las lineas de abajo se encargan de hacer de Proxy para la comunicacion entre discord y las funciones"""
+"""Next lines are just a proxy to other functions"""
 
 
 @tree.command(name="blperfil", description="Obtiene datos de tu perfil de Beatleader")

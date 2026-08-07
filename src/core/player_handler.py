@@ -1,14 +1,14 @@
 import discord
 import time
-import embed_poster
+from core import embed_poster
 import aiohttp
 import json
 import re
 import asyncio
 import logging
 from database import manager
-from embeds import error, success
-from load_config import get_string
+from core.embeds import error, success
+from core.load_config import get_string
 
 plays = 0
 p_data = {}
@@ -32,25 +32,25 @@ async def check_local_player_data(client: discord.Client):
                 continue
             asyncio.create_task(
                 embed_poster.post_embeds(
-                    datos=current_lp_data[player_key]["gameplayinfo"],
+                    data=current_lp_data[player_key]["gameplayinfo"],
                     client=client,
-                    gamestill=plays,
+                    games_until=plays,
                 )
             )
             reset_plays()
         elif current_lp_data[player_key]["time"] > time.time():
             continue
         else:
-            logging.info("Se esta jugando doble")
+            logging.info("Player is using both providers")
             try:
                 del lp_data[player_key]
             except NameError:
                 continue
             asyncio.create_task(
                 embed_poster.post_embeds(
-                    datos=current_lp_data[player_key]["gameplayinfo"],
+                    data=current_lp_data[player_key]["gameplayinfo"],
                     client=client,
-                    gamestill=plays,
+                    games_until=plays,
                 )
             )
             reset_plays()
@@ -140,7 +140,7 @@ async def link(link: str, uid: int):
                 status = request.status
 
         if not '"errorMessage"' in response or status == 404:
-            datos = json.loads(response)
+            data = json.loads(response)
             if manager.load_player_id(str(id)):
                 embed = error(
                     get_string("AccountRegisteredByOtherUserTitle", "UserHandling")
@@ -155,16 +155,16 @@ async def link(link: str, uid: int):
             else:
                 embed = success(
                     get_string("WelcomeUser", "UserHandling").replace(
-                        "{{name}}", datos["name"]
+                        "{{name}}", data["name"]
                     )
                 )
                 embed.add_field(
                     name=get_string("RegisteredCorrectly", "UserHandling"), value=" "
                 )
                 if link.startswith("https://beatleader.xyz/u/"):
-                    embed.set_thumbnail(url=datos["avatar"])
+                    embed.set_thumbnail(url=data["avatar"])
                 if link.startswith("https://scoresaber.com/u/"):
-                    embed.set_thumbnail(url=datos["profilePicture"])
+                    embed.set_thumbnail(url=data["profilePicture"])
                 manager.insert_player(id=str(id), discord=str(uid))
                 return embed
 
@@ -189,13 +189,13 @@ async def unlink(uid: int):
         url = f"https://scoresaber.com/api/player/{player[0]}/full"
         async with session as ses:
             async with ses.get(url) as request:
-                datos = json.loads(await request.text())
+                data = json.loads(await request.text())
         embed = success(
             title=get_string("SuccessUnlink", "UserHandling").replace(
-                "{{name}}", datos["name"]
+                "{{name}}", data["name"]
             )
         )
-        embed.set_thumbnail(url=datos["profilePicture"])
+        embed.set_thumbnail(url=data["profilePicture"])
         manager.delete_player(uid)
     else:
         embed = error(get_string("NoAccountToUnlink", "UserHandling"))

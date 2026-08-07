@@ -72,7 +72,7 @@ async def receive(client: discord.Client):
                 while True:
                     data = await socket.recv()
                     if data and "{" in data:
-                        await player_handler.CheckLocalPlayerData(client)
+                        await player_handler.check_local_player_data(client)
                         data = json.loads(data)
                         if data.get("commandData"):
                             data["Scoresaber"] = True

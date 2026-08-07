@@ -1,4 +1,4 @@
-import connection
+from database import connection
 from typing import Union, Optional
 
 database = connection.Db()

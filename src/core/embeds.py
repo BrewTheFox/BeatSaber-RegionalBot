@@ -1,5 +1,5 @@
 import discord
-from load_config import get_string, get_configuration
+from core.load_config import get_string, get_configuration
 import logging
 from views import button
 from providers import beatsaver
