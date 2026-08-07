@@ -143,9 +143,7 @@ async def score(data: dict, HMDs: dict, games_until: int):
             player_name = data["commandData"]["score"]["leaderboardPlayerInfo"].get(
                 "name"
             )
-            logging.debug(
-                f"Variables multiples asignadas para el usuario {player_name}"
-            )
+            logging.debug(f"Beatleader & Scoresaber vars applied to {player_name}")
             player_id = str(data["commandData"]["score"]["leaderboardPlayerInfo"]["id"])
             pfp = data["commandData"]["score"]["leaderboardPlayerInfo"][
                 "profilePicture"
@@ -198,9 +196,7 @@ async def score(data: dict, HMDs: dict, games_until: int):
             provider = "Beatleader"
             color = discord.Color.dark_purple()
             player_name = data["player"].get("name")
-            logging.debug(
-                f"Variables Beatleader asignadas para el usuario {player_name}"
-            )
+            logging.debug(f"Beatleader vars assigned to {player_name}")
             player_id = str(data["player"]["id"])
             hmd = HMDs[str(data["hmd"])]
             pfp = data["player"]["avatar"]
@@ -250,6 +246,9 @@ async def score(data: dict, HMDs: dict, games_until: int):
             ]
             fails = int(data["commandData"]["score"]["badCuts"]) + int(
                 data["commandData"]["score"]["missedNotes"]
+            )
+            replay = "https://watch.scoresaber.com/?scoreId=" + str(
+                data["commandData"]["score"]["id"]
             )
             song = await beatsaver.song_info(song_hash, difficulty)
             buttons.add_button(
@@ -324,7 +323,7 @@ async def score(data: dict, HMDs: dict, games_until: int):
             name=get_string("Platform", "ScoreEmbed"), value=provider, inline=True
         )
 
-        if "replay" in data_keys:
+        if isinstance(replay, str):
             buttons.add_button(
                 get_string("ViewReplay", "ScoreEmbed"),
                 replay,
