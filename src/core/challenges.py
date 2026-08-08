@@ -18,7 +18,7 @@ async def challenge_player(
     if len(code) < 1:
         return [error(get_string("InvalidBSR", "Challenges")), True]
     code = code[-1]
-    songinfo = await beatsaver.songexists(code)
+    songinfo = await beatsaver.song_exists(code)
     if not songinfo[0]:
         return [error(get_string("InvalidBSR", "Challenges")), True]
     if not manager.load_player_discord(challenger.id):

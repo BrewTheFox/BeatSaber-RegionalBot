@@ -79,7 +79,7 @@ async def cancel(interaction: discord.Interaction):
     description=get_string("GetLeaderboardDescription", "Commands"),
 )
 async def leaderboard(interaction: discord.Interaction):
-    await interaction.response.send_message(embed=await challenges.Leaderboard(client))
+    await interaction.response.send_message(embed=await challenges.leaderboard(client))
 
 
 @tree.command(
