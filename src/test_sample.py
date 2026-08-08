@@ -1,47 +1,53 @@
-import DataBaseManager as DataBaseManager
-import DataBaseConn as DataBaseConn
-import challenges as challenges
-from loadconfig import GetString, GetConfiguration
-from Embeds import PlayerEmbed
+from database import manager
+from database import connection
+from core.load_config import get_string, get_configuration
+from core.embeds import player
 from discord import Color
 
-DataBaseManager.database = DataBaseConn.db(":memory:")
+manager.database = connection.Db(":memory:")
 
-def testInsertPlayer():
+def test_insert_player():
 
-    DataBaseManager.InsertPlayer("444444", "99999")
-    retrievedplayer = DataBaseManager.LoadPlayerDiscord("444444")
-    assert "444444" == retrievedplayer[0]
-    assert "99999" == retrievedplayer[1]
-    assert 0 == retrievedplayer[2]
+    manager.insert_player("444444", "99999")
+    retrieved_player = manager.load_player_discord("444444")
+    assert "444444" == retrieved_player[1]
+    assert "99999" == retrieved_player[0]
+    assert 0 == retrieved_player[2]
 
-def testPlayerLoading():
-    invalidplayerdiscord = DataBaseManager.LoadPlayerDiscord("inexistent")
-    invalidplayerid = DataBaseManager.LoadPlayerID("inexistent")
-    assert invalidplayerdiscord == False
-    assert invalidplayerid == False
 
-def testPlayerDeletion():
-    DataBaseManager.DeletePlayer('444444')
-    retrievedplayerdiscord = DataBaseManager.LoadPlayerDiscord("444444")
-    assert retrievedplayerdiscord == False
+def test_player_loading():
+    invalid_player_discord = manager.load_player_discord("inexistent")
+    invalid_player_id = manager.load_player_id("inexistent")
+    assert invalid_player_discord == False
+    assert invalid_player_id == False
 
-def testPlayerEmbed():
+
+def test_player_deletion():
+    manager.delete_player("444444")
+    retrieved_player_discord = manager.load_player_discord("444444")
+    assert retrieved_player_discord == False
+
+
+def test_player_embed():
     data = {
-    "name": "BrewTheFox",
-    "avatar": "https://example.com/avatar.jpg",
-    "rank": 12345,
-    "country": "CO",
-    "countryRank": 42,
-    "pp": 5000.5,
-    "scoreStats": {
-        "totalScore": 1234567890,
-        "totalPlayCount": 876,
-        }
+        "name": "BrewTheFox",
+        "avatar": "https://example.com/avatar.jpg",
+        "rank": 12345,
+        "country": "CO",
+        "countryRank": 42,
+        "pp": 5000.5,
+        "scoreStats": {
+            "totalScore": 1234567890,
+            "totalPlayCount": 876,
+        },
     }
-    embed = PlayerEmbed(Color.random(), data)
-    assert embed.title == GetConfiguration()["Strings"]["ProfileRequest"]["ProfileOf"].replace("{{name}}", data["name"])
+    embed = player(Color.random(), data)
+    assert embed.title == get_configuration()["Strings"]["ProfileRequest"][
+        "ProfileOf"
+    ].replace("{{name}}", data["name"])
     del data["avatar"]
     data["profilePicture"] = "https://example.com/profile_picture.jpg"
-    embed = PlayerEmbed(Color.random(), data)
-    assert embed.title == GetConfiguration()["Strings"]["ProfileRequest"]["ProfileOf"].replace("{{name}}", data["name"])
+    embed = player(Color.random(), data)
+    assert embed.title == get_configuration()["Strings"]["ProfileRequest"][
+        "ProfileOf"
+    ].replace("{{name}}", data["name"])
