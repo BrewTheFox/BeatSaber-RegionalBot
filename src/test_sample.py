@@ -10,8 +10,8 @@ def test_insert_player():
 
     manager.insert_player("444444", "99999")
     retrieved_player = manager.load_player_discord("444444")
-    assert "444444" == retrieved_player[0]
-    assert "99999" == retrieved_player[1]
+    assert "444444" == retrieved_player[1]
+    assert "99999" == retrieved_player[0]
     assert 0 == retrieved_player[2]
 
 

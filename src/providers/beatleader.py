@@ -7,18 +7,18 @@ import asyncio
 import logging
 from database import manager
 from core.load_config import get_string, get_configuration
-from core.embeds import error_with_fields
+from core.embeds import error_with_fields, player
 
 COUNTRY = get_configuration()["Country"]
 
 
 async def get_player_info(did: int) -> tuple:
     session = aiohttp.ClientSession()
-    player = manager.load_player_discord(str(did))
-    if player:
+    player_data = manager.load_player_discord(str(did))
+    if player_data:
         async with session as ses:
             async with ses.get(
-                f"https://api.beatleader.com/player/{player[0]}?stats=true&keepOriginalId=false"
+                f"https://api.beatleader.com/player/{player_data[0]}?stats=true&keepOriginalId=false"
             ) as request:
                 data = json.loads(await request.text())
         embed = player(discord.Color.purple(), data)
