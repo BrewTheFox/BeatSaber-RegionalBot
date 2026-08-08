@@ -5,6 +5,7 @@ import os
 from providers import scoresaber, beatleader
 from core import challenges, player_handler, embed_poster
 import logging
+from core.load_config import get_string
 from database import manager
 
 logging.basicConfig(filename="../logs.log", encoding="utf-8", level=logging.INFO)
@@ -19,30 +20,36 @@ logging.info("Loading users...")
 """Next lines are just a proxy to other functions"""
 
 
-@tree.command(name="blperfil", description="Obtiene datos de tu perfil de Beatleader")
+@tree.command(
+    name=get_string("FetchOwnBl", "Commands"),
+    description=get_string("FetchOwnBlDescription", "Commands"),
+)
 async def fetch_own_bl_data(interaction: discord.Interaction):
     embed, ephemeral = await beatleader.get_player_info(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
 
 
 @tree.command(
-    name="verblperfil",
-    description="Obtiene datos del perfil de Beatleader de alguien del servidor",
+    name=get_string("FetchPersonBl", "Commands"),
+    description=get_string("FetchPersonBlDescription", "Commands"),
 )
 async def fetch_bl_player(interaction: discord.Interaction, miembro: discord.Member):
     embed, ephemeral = await beatleader.get_player_info(miembro.id)
     await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
 
 
-@tree.command(name="ssperfil", description="Obtiene datos de tu perfil de scoresaber")
+@tree.command(
+    name=get_string("FetchOwnSs", "Commands"),
+    description=get_string("FetchOwnSsDescription", "Commands"),
+)
 async def fetch_own_ss_data(interaction: discord.Interaction):
     embed, ephemeral = await scoresaber.get_player_info(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
 
 
 @tree.command(
-    name="verssperfil",
-    description="Obtiene datos del perfil de scoresaber de alguien del servidor",
+    name=get_string("FetchPersonSs", "Commands"),
+    description=get_string("FetchPersonSsDescription", "Commands"),
 )
 async def fetch_ss_player(interaction: discord.Interaction, miembro: discord.Member):
     embed, ephemeral = await scoresaber.get_player_info(miembro.id)
@@ -50,26 +57,35 @@ async def fetch_ss_player(interaction: discord.Interaction, miembro: discord.Mem
 
 
 @tree.command(
-    name="desvincular",
-    description="Desvincula y elimina los datos de la cuenta vinculada.",
+    name=get_string("Unlink", "Commands"),
+    description=get_string("UnlinkDescription", "Commands"),
 )
 async def unlink(interaction: discord.Interaction):
     embed = await player_handler.unlink(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="cancelar", description="Cancela el reto actual.")
+@tree.command(
+    name=get_string("Cancel", "Commands"),
+    description=get_string("CancelDescription", "Commands"),
+)
 async def cancel(interaction: discord.Interaction):
     embed = challenges.cancel_challenge(interaction.user.id)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="leaderboard", description="Retorna el leaderboard de los retos :)")
+@tree.command(
+    name=get_string("GetLeaderboard", "Commands"),
+    description=get_string("GetLeaderboardDescription", "Commands"),
+)
 async def leaderboard(interaction: discord.Interaction):
     await interaction.response.send_message(embed=await challenges.Leaderboard(client))
 
 
-@tree.command(name="reto", description="Te permite retar a un jugador en una cancion.")
+@tree.command(
+    name=get_string("ChallengePlayer", "Commands"),
+    description=get_string("ChallengePlayerDescription", "Commands"),
+)
 async def challenge_player(
     interaction: discord.Interaction, bsr: str, jugador: discord.Member
 ):
@@ -87,8 +103,8 @@ async def challenge_player(
 
 
 @tree.command(
-    name="vincular",
-    description="Vincula una cuenta de beatsaber con tu cuenta de discord.",
+    name=get_string("Link", "Commands"),
+    description=get_string("LinkDescription", "Commands"),
 )
 async def link(interaction: discord.Interaction, link: str):
     embed = await player_handler.link(link, interaction.user.id)
@@ -96,8 +112,8 @@ async def link(interaction: discord.Interaction, link: str):
 
 
 @tree.command(
-    name="establecer_canal_retos",
-    description="Establece el canal de retos en el servidor.",
+    name=get_string("SetChallengeChannel", "Commands"),
+    description=get_string("SetChallengeChannelDescription", "Commands"),
 )
 @has_permissions(administrator=True)
 async def set_challenges_channel(interaction: discord.Interaction):
@@ -115,8 +131,8 @@ async def set_challenges_channel(interaction: discord.Interaction):
 
 
 @tree.command(
-    name="establecer_canal_scores",
-    description="Establece el canal de scores en el servidor.",
+    name=get_string("SetScoreChannel", "Commands"),
+    description=get_string("SetScoreChannelDescription", "Commands"),
 )
 @has_permissions(administrator=True)
 async def set_score_channel(interaction: discord.Interaction):
@@ -134,8 +150,8 @@ async def set_score_channel(interaction: discord.Interaction):
 
 
 @tree.command(
-    name="establecer_canal_feed",
-    description="Establece el canal del feed de jugadores en el servidor.",
+    name=get_string("SetFeedChannel", "Commands"),
+    description=get_string("SetFeedChannelDescription", "Commands"),
 )
 @has_permissions(administrator=True)
 async def set_feed_channel(interaction: discord.Interaction):
@@ -152,7 +168,10 @@ async def set_feed_channel(interaction: discord.Interaction):
         )
 
 
-@tree.command(name="eliminar_canal", description="Bye Bye SPAM")
+@tree.command(
+    name=get_string("RemoveChannel", "Commands"),
+    description=get_string("RemoveChannelDescription", "Commands"),
+)
 @has_permissions(administrator=True)
 async def remove_channel(interaction: discord.Interaction):
     if interaction.user.guild_permissions.administrator == True:
