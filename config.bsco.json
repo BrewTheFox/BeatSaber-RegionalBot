@@ -1,0 +1,106 @@
+{
+    "Country":"CO",
+    "Strings":{
+        "Commands": {
+            "FetchPersonBl": "bl_usuario",
+            "FetchPersonBlDescription": "Consulta las estadísticas de BeatLeader de otro miembro del servidor.",
+            "FetchOwnBl": "bl_perfil",
+            "FetchOwnBlDescription": "Muestra las estadísticas actuales de tu perfil de BeatLeader.",
+            "FetchOwnSs": "ss_perfil",
+            "FetchOwnSsDescription": "Muestra las estadísticas actuales de tu perfil de ScoreSaber.",
+            "FetchPersonSs": "ss_usuario",
+            "FetchPersonSsDescription": "Consulta las estadísticas de ScoreSaber de otro miembro del servidor.",
+            "Unlink": "desvincular",
+            "UnlinkDescription": "Desvincula tu cuenta de Beat Saber y elimina tus datos del bot.",
+            "Link": "vincular",
+            "LinkDescription": "Vincula tu perfil de ScoreSaber o BeatLeader a tu cuenta de Discord.",
+            "Cancel": "cancelar_reto",
+            "CancelDescription": "Cancela tu reto actual (otorgará la victoria a tu oponente).",
+            "GetLeaderboard": "ranking_retos",
+            "GetLeaderboardDescription": "Muestra la tabla de clasificación de los mejores retadores del servidor.",
+            "ChallengePlayer": "retar",
+            "ChallengePlayerDescription": "Desafía a un jugador del servidor a superar una puntuación en un mapa (BSR).",
+            "SetChallengeChannel": "canal_retos",
+            "SetChallengeChannelDescription": "Configura el canal actual para recibir los anuncios de los retos.",
+            "SetFeedChannel": "canal_feed",
+            "SetFeedChannelDescription": "Configura el canal actual para mostrar la actividad general de los jugadores.",
+            "SetScoreChannel": "canal_scores",
+            "SetScoreChannelDescription": "Configura el canal actual para mostrar los nuevos puntajes (scores).",
+            "RemoveChannel": "desactivar_canal",
+            "RemoveChannelDescription": "Elimina la configuración del bot en este canal para evitar notificaciones."
+        },
+        "Misc":{
+            "AskUserToLink":"**Parece que el usuario al que estas intentando retar/stalkear no ha vinculado su cuenta.**",
+            "NoLinkedAccountUser":"¡No hay una cuenta vinculada a este usuario!",
+            "UserHasNoLinkedAccount":"Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion.",
+            "UserHasNoPerms": "No puedes hacer esto!",
+            "RemovedChannelSuccess": "Se elimino el canal correctamente!",
+            "SetChannelSuccess": "Se establecio el canal."
+        },
+        "ProfileRequest":{
+            "ProfileOf":"¡Perfil de {{name}}!",
+            "PerformancePoints":"PP:",
+            "TotalScore":"Puntaje total:",
+            "TotalPlays":"Juegos totales:"
+        },
+
+        "Challenges":{
+            "CancelChallenge":"Se ha cancelado el reto y se le ha dado a tu oponente un punto.",
+            "UserHasNoChallenge": "No tienes ningun reto ahora mismo.",
+            "InvalidBSR":"El BSR seleccionado es invalido.",
+            "InvalidPlayer":"Claramente este reto no es para ti.",
+            "Accept":"Aceptar",
+            "Deny": "Rechazar",
+            "UserChallengedNotification": "El usuario {{challenger}} ha retado a {{challenged}} a competir por el mayor puntaje en la cancion {{songName}}!",
+            "UserChallengeDeny": "Se ha cancelado el reto.",
+            "UserChallengeAccept": "Se ha aceptado el reto, PD: el ID de la cancion es **{{SongID}}**",
+            "UserHasChallenge": "Alguno de los dos usuarios ya tiene un reto pendiente",
+            "UserWonChallenge": "El usuario {{name1}} gano el reto frente al usuario {{name2}} en la cancion {{SongID}}",
+            "InvalidUser": "No le puedes enviar reto a este usuario.",
+            "Leaderboard": "Leaderboard",
+            "NoPlays": "Nadie ha jugado..."
+        },
+
+        "ScoreEmbed":{
+            "EmbedTitle":"¡**{{name}}** lo logró!",
+            "ToPass":"Se paso satisfactoriamente **{{song}}** en la dificultad **{{difficulty}}** 🎶",
+            "Average":"🎯 Acc:",
+            "Stars":"⭐ Estrellas: ",
+            "Score":"🏆 Puntaje: ",
+            "Device":"🛠️ Dispositivo",
+            "AddedPerformancePoints":"📈 PP: ",
+            "AddedPerformancePointsBeatLeader":"📈 PP(BL): ",
+            "AddedPerformancePointsScoreSaber":"📈 PP(SS): ",
+            "GoodvsWrong":"📝 Notas logradas:",
+            "Platform":"📦 Plataforma:",
+            "ViewReplay":"Ver replay",
+            "DownloadSong":"Descargar la cancion",
+            "LastGameBefore":"El anterior juego de alguien de tu pais fue hace {{var}} partidas.",
+            "BothPlatforms":"Beatleader y Scoresaber",
+            "BeatLeaderEmoji":"<:beatleader:1326638016277516429>",
+            "ScoreSaberEmoji":"<:scoresaber:1326637802963734528>",
+            "ReplayEmoji":"<a:bspepe:1368253102880329808>",
+            "BeatSaverEmoji":"<:beatsaver:1326638178009874465>"
+        },
+
+        "UserHandling":{
+            "NoAccountToUnlink":"No tienes una cuenta que desvincular",
+            "SuccessUnlink":"La cuenta {{name}} se ha desvinculado de tu discord.",
+            "ServiceUnavailable":"Este servicio no se encuentra disponible, porfavor, solo scoresaber o beatleader.",
+            "InvalidAccount":"La cuenta introducida es invalida ;( intentalo denuevo.",
+            "RegisteredCorrectly":"Fuiste registrado correctamente.",
+            "WelcomeUser":"Hola, {{name}} ¡Bienvenido!",
+            "AccountRegisteredByOtherUserTitle":"¿A quien engañas?",
+            "AccountRegisteredByOtherUserContent":"Esta cuenta esta registrada por otro usuario",
+            "InvalidURL":"No se puede vincular la cuenta sin un link valido.",
+            "UserAlreadyLinkedAccount":"Ya vinculaste una cuenta antes, si quieres vincular esta utiliza /desvincular primero."
+        },
+        "Status": {
+            "Status":"Hace {{var}} juegos se registro el ultimo score de tu pais. ¡Se el siguiente en jugar!"
+        },
+        "Overcome": {
+            "OvercomeTitle":"!**{{name1}}** Logro superar a **{{name2}}** en el leaderboard!",
+            "OvercomeDescription":"¡Con tan solo {{var1}} puntos de diferencia, Por lo que ahora su posicion en {{leaderboard}} es **#{{var2}}**!"
+        }
+    }
+}

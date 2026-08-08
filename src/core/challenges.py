@@ -88,7 +88,7 @@ async def check_challenge_winner(
     """Checks the winner of the challenge if it is ready to be considered as completed!"""
     challenge = manager.get_challenge(playerID)
     if challenge[3] == None:
-        manager.update_challegne(playerID, score)
+        manager.update_challenge(playerID, score)
         return
     if challenge[3] == playerID:
         return

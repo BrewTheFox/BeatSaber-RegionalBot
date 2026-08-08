@@ -12,7 +12,7 @@ def get_challenge_discord(discord: str):
     return database.get_challenge_discord(discord)
 
 
-def update_challegne(id: str, score: str) -> None:
+def update_challenge(id: str, score: str) -> None:
     return database.update_challenge(id, score)
 
 

@@ -1,75 +1,90 @@
-# BeatSaber Regional Bot
+# TrackSaber
 
-## Descripción del Proyecto
+## Features:
+  - ### Real-time gameplay tracking and notifications for discord.
+    - Beatleader and ScoreSaber realtime tracking support.
+    - When a foreign registered player plays message will be sent to your server
 
-Este bot de Discord está diseñado para mejorar la experiencia de la comunidad de Beat Saber, especialmente para jugadores de una región específica (en mi caso, `CO`). Se integra con las APIs de ScoreSaber y BeatLeader para proporcionar información en tiempo real y fomentar la competencia amistosa. El bot ofrece una variedad de funcionalidades que mantienen a los jugadores conectados y motivados.
+  - ### Challenge system.
+    - Players can challenge each other to play specific songs.
+    - The winner gets +2 points if they win.
 
-## Características Principales
+  - ### Easy to implement for regional servers.
+    - Add your bot token to the .env file.
+    - Just edit the config.json file, translate the texts, set your country code and you're ready to go! 
 
-### 🔔 Alertas en Tiempo Real
-  *   Recibe notificaciones instantáneas en Discord cada vez que un jugador de tu país completa una partida en Beat Saber.
-  *   La información incluye detalles del jugador, la canción, la puntuación, el PP ganado y más.
-  *   Soporte para ScoreSaber y BeatLeader.
+## Configuration:
+  - ### config.env:
+    Create a new application from the [Discord Developer Portal](https://discord.com/developers/applications).
+    When the application is created go to the Bot section, set a username for your bot and select all of the privileged gateway intents. 
 
-### 🔗 Vinculación de Cuentas
-  *   Permite a los usuarios vincular sus perfiles de ScoreSaber y BeatLeader a sus cuentas de Discord.
-  *   Facilita el acceso rápido a estadísticas personales y de otros jugadores.
+    To get the token you have to regenerate your bot's token and copy it.
 
-### 📊 Información de Jugadores
-  *   Accede a perfiles detallados de jugadores de ScoreSaber y BeatLeader directamente en Discord.
-  *   Muestra información relevante como el rango global, rango en el país, PP, puntuación total y número de partidas jugadas.
-
-### 🏆 Retos Personalizables
-  *   Genera retos aleatorios basados en diferentes niveles de dificultad (Fácil, Difícil y Experto+).
-  *   Los retos pueden ser basados en puntaje, estrellas del mapa o PP.
-  *   Los usuarios pueden solicitar y cancelar retos.
-  *   Recibe felicitaciones del bot cuando se completa un reto.
-
-### 📢 Feed de Jugadores
-  *   Canal dedicado para notificar quien esta jugando y cuando, fomentando la participación activa de la comunidad.
-  *   Muestra mensajes personalizados cuando un jugador supera a otro en el leaderboard.
-
-### ⚙️ Configuración Sencilla
-  *   Administra fácilmente los canales para retos, alertas de puntuaciones y feed de jugadores utilizando comandos en Discord.
-
-## Comandos del Bot
-
-| Comando                      | Descripción                                                               | Permisos Requeridos |
-| ---------------------------- | ------------------------------------------------------------------------- | -------------------- |
-| `/blperfil`                  | Muestra tu perfil de BeatLeader.                                           | Ninguno              |
-| `/verblperfil <miembro>`     | Muestra el perfil de BeatLeader de un usuario específico del servidor.     | Ninguno              |
-| `/ssperfil`                  | Muestra tu perfil de ScoreSaber.                                            | Ninguno              |
-| `/verssperfil <miembro>`     | Muestra el perfil de ScoreSaber de un usuario específico del servidor.      | Ninguno              |
-| `/vincular <link>`          | Vincula tu perfil de Beat Saber (ScoreSaber o BeatLeader) a Discord.         | Ninguno              |
-| `/desvincular`               | Desvincula tu cuenta de Beat Saber de Discord.                             | Ninguno              |
-| `/reto <dificultad>`         | Genera un reto de Beat Saber basado en la dificultad seleccionada.       | Ninguno              |
-| `/cancelar`                  | Cancela el reto actual.                                                     | Ninguno              |
-| `/establecer_canal_retos`    | Establece el canal para los mensajes de retos del servidor.                 | Administrador        |
-| `/establecer_canal_scores`   | Establece el canal para los mensajes de alertas de puntuaciones del servidor. | Administrador        |
-| `/establecer_canal_feed`    | Establece el canal para los mensajes de actividad de jugadores del servidor.     | Administrador        |
-| `/eliminar_canal`          | Elimina el canal actual de las notificaciones del bot. | Administrador       |
-
-## Instalación
-
-1.  **Clona el Repositorio:**
+    paste your token after "=" in the file:
     ```bash
-    git clone <URL_DEL_REPOSITORIO>
-    cd <NOMBRE_DEL_REPOSITORIO>
+    token=MTUzNTY4NDAxNTg0MjAwNTAxMg.##########################
     ```
 
-2.  **Configura el Entorno:**
-    *   En el archivo `.env` agrega tu token de Discord:
-        ```env
-        token=TU_TOKEN_DE_DISCORD
+  - ### config.json:
+    - **Country configuration:**
+    Replace "(Your country code here)" with the country code you want to track. Ex
+
+    ```json
+      {
+        "Country": "CO"
+      }
+    ```
+
+    - **Updating locales:**
+    Just change the text in the keys you want to change:
+      Ex Old:
+        ```json
+          "Misc": {
+            "AskUserToLink": "**It seems the user you are trying to challenge/stalk has not linked their account.**",
+          }
         ```
-    *   Configura el archivo `config.json` con tus preferencias, como el país, los parámetros de los retos y los textos personalizados.
 
-3.  **Instala las Dependencias:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+      Ex New:
+        ```json
+          "Misc": {
+              "AskUserToLink": "**The user you're quering hasn't linked their account yet.**",
+            }
+        ```
+    
+    - **Updating command names and descriptions:**
+    Use the following table as reference:
 
-4.  **Ejecuta el Bot:**
-    ```bash
-    python src/main.py
-    ```
+    Where the key is of type command you can only use underscores and lowercase values.
+    
+| key | type | default value |
+|---|---|---|
+| FetchPersonBl |  command | bl_user |
+| FetchPersonBlDescription | description | Check the BeatLeader statistics of another server member. |
+| FetchOwnBl | command | bl_profile |
+| FetchOwnBlDescription | description | Show your current BeatLeader profile statistics. |
+| FetchOwnSs | command | ss_profile |
+| FetchOwnSsDescription | description | Show your current ScoreSaber profile statistics. |
+| FetchPersonSs | command | ss_user |
+| FetchPersonSsDescription | description | Check the ScoreSaber statistics of another server member. |
+| Unlink | command | unlink |
+| UnlinkDescription | description | Unlink your Beat Saber account and remove your data from the bot. |
+| Link | command | link |
+| LinkDescription | description | Link your ScoreSaber or BeatLeader profile to your Discord account. |
+| Cancel | command | cancel_challenge |
+| CancelDescription | description | Cancel your current challenge (will grant victory to your opponent). |
+| GetLeaderboard | command | challenge_leaderboard |
+| GetLeaderboardDescription | description | Show the leaderboard of the top challengers in the server. |
+| ChallengePlayer | command | challenge |
+| ChallengePlayerDescription | description | Challenge a server player to beat a score on a map (BSR). |
+| SetChallengeChannel | command | challenge_channel |
+| SetChallengeChannelDescription | description | Set the current channel to receive challenge announcements. |
+| SetFeedChannel | command | feed_channel |
+| SetFeedChannelDescription | description | Set the current channel to display general player activity. |
+| SetScoreChannel | command | score_channel |
+| SetScoreChannelDescription | description | Set the current channel to display new scores. |
+| RemoveChannel | command | disable_channel |
+| RemoveChannelDescription | description | Remove the bot configuration in this channel to stop notifications. |
+
+
+
+## Starting the bot:
