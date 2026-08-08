@@ -120,13 +120,13 @@ async def set_challenges_channel(interaction: discord.Interaction):
     if interaction.user.guild_permissions.administrator == True:
         manager.create_channel(str(interaction.channel.id), channel_type=0)
         embed = discord.Embed(
-            title="El canal se ha establecido exitosamente para los retos :)",
+            title=get_string("SetChannelSuccess", "Misc"),
             color=discord.Color.green(),
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
-            title="No tienes permiso para esto", color=discord.Color.red()
+            title=get_string("UserHasNoPerms", "Misc"), color=discord.Color.red()
         )
 
 
@@ -139,13 +139,13 @@ async def set_score_channel(interaction: discord.Interaction):
     if interaction.user.guild_permissions.administrator == True:
         manager.create_channel(str(interaction.channel.id), channel_type=1)
         embed = discord.Embed(
-            title="El canal se ha establecido exitosamente para los scores :)",
+            title=get_string("SetChannelSuccess", "Misc"),
             color=discord.Color.green(),
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
-            title="No tienes permiso para esto", color=discord.Color.red()
+            title=get_string("UserHasNoPerms", "Misc"), color=discord.Color.red()
         )
 
 
@@ -158,13 +158,13 @@ async def set_feed_channel(interaction: discord.Interaction):
     if interaction.user.guild_permissions.administrator == True:
         manager.create_channel(str(interaction.channel.id), channel_type=2)
         embed = discord.Embed(
-            title="El canal se ha establecido exitosamente para el feed de los jugadores :)",
+            title=get_string("SetChannelSuccess", "Misc"),
             color=discord.Color.green(),
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
-            title="No tienes permiso para esto", color=discord.Color.red()
+            title=get_string("UserHasNoPerms", "Misc"), color=discord.Color.red()
         )
 
 
@@ -177,13 +177,13 @@ async def remove_channel(interaction: discord.Interaction):
     if interaction.user.guild_permissions.administrator == True:
         manager.remove_channel(str(interaction.channel.id))
         embed = discord.Embed(
-            title="El canal se ha eliminado satisfactoriamente",
+            title=get_string("RemovedChannelSuccess", "Misc"),
             color=discord.Color.red(),
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
-            title="No tienes permiso para esto", color=discord.Color.red()
+            title=get_string("UserHasNoPerms", "Misc"), color=discord.Color.red()
         )
 
 

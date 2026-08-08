@@ -54,7 +54,10 @@
         "Misc":{
             "AskUserToLink":"**Parece que el usuario al que estas intentando retar/stalkear no ha vinculado su cuenta.**",
             "NoLinkedAccountUser":"¡No hay una cuenta vinculada a este usuario!",
-            "UserHasNoLinkedAccount":"Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion."
+            "UserHasNoLinkedAccount":"Porfavor vincula tu cuenta con /vincular <link> para acceder a esta funcion.",
+            "UserHasNoPerms": "No puedes hacer esto!",
+            "RemovedChannelSuccess": "Se elimino el canal correctamente!",
+            "SetChannelSuccess": "Se establecio el canal."
         },
         "ProfileRequest":{
             "ProfileOf":"¡Perfil de {{name}}!",
