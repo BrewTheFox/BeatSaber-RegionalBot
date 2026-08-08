@@ -55,7 +55,7 @@
     Use the following table as reference:
 
     Where the key is of type command you can only use underscores and lowercase values.
-    
+
 | key | type | default value |
 |---|---|---|
 | FetchPersonBl |  command | bl_user |
@@ -85,6 +85,45 @@
 | RemoveChannel | command | disable_channel |
 | RemoveChannelDescription | description | Remove the bot configuration in this channel to stop notifications. |
 
-
-
 ## Starting the bot:
+  - ### Machine:
+  1. Clone the repo
+
+  ```bash
+  git clone https://github.com/BrewTheFox/TrackSaber.git
+  cd TrackSaber
+  ```
+
+  2. Configure your [environment files](./#configuration):
+
+  3. Install the dependencies:
+  ```bash
+  python -m venv .venv (linux only)
+  source .venv/bin/activate (linux only)
+  pip install -r requirements.txt
+  ```
+
+  4. Run the bot:
+
+  ```bash
+  cd src
+  python main.py
+  ```
+
+  - ### Docker Compose:
+    ```yaml
+    services:
+      tracksaber:
+        image: {built_image_name}
+        restart: always
+
+        volumes:
+          - path/to/local/config.json: /app/config.json
+          - path/to/local/db/notneeded/db.db: /app/database.db
+          - path/to/local/logs.log: /app/logs.log
+        
+        environment:
+          - token=MTUzNTY4NDAxNTg0MjAwNTAxMg.########################## (your discord bot token)
+    
+    ```
+
